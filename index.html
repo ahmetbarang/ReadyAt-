@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ReadyAt</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ReadyAt">
+  <meta name="theme-color" content="#0b0f17">
+
+  <link id="dynamicAppleIcon" rel="apple-touch-icon" sizes="180x180">
+  <link id="dynamicFavicon" rel="icon" type="image/png">
+  <script>
+    (function generateAppIcon() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 180;
+      canvas.height = 180;
+      const ctx = canvas.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 180, 180);
+      grad.addColorStop(0, '#0369a1');
+      grad.addColorStop(0.5, '#0284c7');
+      grad.addColorStop(1, '#38bdf8');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 180, 180);
+
+      ctx.lineWidth = 11;
+      ctx.strokeStyle = '#0b0f17';
+      ctx.beginPath();
+      ctx.arc(90, 90, 64, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#0b0f17';
+      ctx.beginPath();
+      ctx.moveTo(96, 42);
+      ctx.lineTo(64, 94);
+      ctx.lineTo(92, 94);
+      ctx.lineTo(84, 138);
+      ctx.lineTo(116, 86);
+      ctx.lineTo(88, 86);
+      ctx.closePath();
+      ctx.fill();
+
+      const pngUri = canvas.toDataURL('image/png');
+      document.getElementById('dynamicAppleIcon').href = pngUri;
+      document.getElementById('dynamicFavicon').href = pngUri;
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg-base: #0b0f17;
+      --bg-card: #131926;
+      --bg-card-subtle: #1a2336;
+      --border: #222d42;
+      --border-bright: #2d3b55;
+      
+      --accent: #38bdf8;
+      --accent-deep: #0284c7;
+      --accent-subtle: rgba(56, 189, 248, 0.14);
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --warning: #f59e0b;
+      --warning-subtle: rgba(245, 158, 11, 0.15);
+      --success: #10b981;
+      --danger: #ef4444;
+      --orange: #f97316;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      overflow-y: auto;
+    }
+
+    .app-viewport {
+      width: 100%;
+      max-width: 440px;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 10px 14px 18px;
+      gap: 10px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 2px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent-deep) 0%, var(--accent) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0b0f17;
+      flex-shrink: 0;
+    }
+
+    .brand-logo svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .ac-badge {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      background: var(--accent-subtle);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 5px;
+      padding: 1px 6px;
+    }
+
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .brand-text {
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-main);
+    }
+
+    .brand-pill {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .weather-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .icon-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 9px;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .tabs-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 7px 4px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 7px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card-subtle);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .hero-card {
+      background: radial-gradient(130% 120% at 50% 0%, #162030 0%, var(--bg-card) 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hero-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .hero-primary {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #fff;
+      line-height: 1.1;
+    }
+
+    .hero-primary .accent {
+      color: var(--accent);
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+
+    .badge-early {
+      background: var(--warning-subtle);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: var(--warning);
+    }
+
+    .badge-cv {
+      background: var(--accent-subtle);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: var(--accent);
+    }
+
+    .badge-precon {
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid rgba(249, 115, 22, 0.4);
+      color: var(--orange);
+    }
+
+    .badge-battery-heat {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin: 2px 0 4px;
+      line-height: 1.3;
+    }
+
+    .hero-stats {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .stat-k {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-v {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .card-battery-hero {
+      background: linear-gradient(180deg, #162135 0%, var(--bg-card) 100%);
+      border: 1.5px solid var(--accent);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.1);
+    }
+
+    .battery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .battery-header-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #fff;
+    }
+
+    .battery-delta-tag {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0b0f17;
+      background: var(--accent);
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+
+    .range-group-hero {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .range-labels-hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .range-val-hero {
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 16px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 6px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-bright);
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid #0b0f17;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-dim);
+    }
+
+    .trip-chips-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .trip-chip {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 7px 4px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .trip-chip.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .time-box {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .time-box-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .time-box-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .mini-pill-now {
+      font-size: 10.5px;
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .time-input {
+      background: transparent;
+      border: none;
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 800;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .recommend-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .recommend-pill {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .recommend-pill.active-rec {
+      border-color: rgba(56, 189, 248, 0.6);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.18) 0%, var(--bg-card-subtle) 100%);
+    }
+
+    .rec-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .rec-amp {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .rec-detail {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .rec-early-note {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--warning);
+    }
+
+    /* ŞEMATİK ÇUBUK: %0 - %100 TÜM BATARYA */
+    .schematic-progress-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .schematic-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .schematic-endpoint {
+      color: var(--text-muted);
+    }
+
+    .schematic-endpoint strong {
+      color: #fff;
+    }
+
+    .schematic-phase-pill {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      background: var(--accent-subtle);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 6px;
+      padding: 2px 7px;
+    }
+
+    .schematic-track {
+      position: relative;
+      width: 100%;
+      height: 12px;
+      background: #0f1522;
+      border-radius: 6px;
+      border: 1px solid var(--border-bright);
+      overflow: visible;
+    }
+
+    .schematic-initial-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: #1e293b;
+      border-radius: 5px 0 0 5px;
+      transition: width 0.3s ease;
+    }
+
+    .schematic-fill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0%;
+      width: 0%;
+      background: linear-gradient(90deg, #0284c7 0%, var(--accent) 100%);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .schematic-marker {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      width: 3px;
+      border-radius: 2px;
+      z-index: 4;
+      pointer-events: none;
+      transition: left 0.3s ease;
+    }
+
+    .schematic-marker-start {
+      background: #94a3b8;
+    }
+
+    .schematic-marker-target {
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+    }
+
+    .schematic-legend-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--text-dim);
+      padding: 0 1px;
+    }
+
+    .schematic-stages-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .stage-item {
+      flex: 1;
+      text-align: center;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--text-dim);
+      padding: 4px 1px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .stage-item.current {
+      color: var(--accent);
+      background: var(--accent-subtle);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-start-charging {
+      width: 100%;
+      background: linear-gradient(135deg, #0284c7 0%, var(--accent) 100%);
+      color: #0b0f17;
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-start-charging.active-session {
+      background: linear-gradient(135deg, #059669 0%, var(--success) 100%);
+      color: #0b0f17;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+    }
+
+    .bottom-pills-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .ctrl-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 2px;
+      cursor: pointer;
+    }
+
+    .ctrl-pill.active {
+      border-color: rgba(56, 189, 248, 0.5);
+      background: var(--accent-subtle);
+    }
+
+    .ctrl-pill-icon {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .ctrl-pill-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .ctrl-pill.active .ctrl-pill-title {
+      color: var(--accent);
+    }
+
+    .ctrl-pill-sub {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+    }
+
+    .phase-selector-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .phase-btn {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 7px 8px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .phase-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    .amp-quick-chips {
+      display: flex;
+      gap: 5px;
+      justify-content: space-between;
+    }
+
+    .amp-chip {
+      flex: 1;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 7px;
+      padding: 6px 2px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .amp-chip.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    .legal-footer {
+      text-align: center;
+      padding: 4px;
+      font-size: 10px;
+      color: var(--text-dim);
+      line-height: 1.3;
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 440px;
+      max-height: 85dvh;
+      overflow-y: auto;
+      background: var(--bg-card);
+      border-radius: 18px 18px 0 0;
+      border-top: 1px solid var(--border);
+      padding: 16px 14px calc(16px + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: slideUp 0.2s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .form-select, .form-input {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .btn-action {
+      background: var(--accent);
+      color: #0b0f17;
+      border: none;
+      border-radius: 9px;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    .info-callout {
+      background: var(--accent-subtle);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .session-info-box {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .session-info-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .session-info-k {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .session-info-v {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .log-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .log-btn {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .log-btn.ok {
+      border-color: rgba(16, 185, 129, 0.5);
+      color: var(--success);
+    }
+
+    .log-btn.early {
+      border-color: rgba(245, 158, 11, 0.5);
+      color: var(--warning);
+    }
+
+    .log-btn.miss {
+      border-color: rgba(239, 68, 68, 0.5);
+      color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.8" opacity="0.9" />
+            <path d="M12 4.5V6.5" stroke="currentColor" stroke-width="1.8" />
+            <path d="M19.5 12H17.5" stroke="currentColor" stroke-width="1.8" />
+            <path d="M12.8 6.8L8.8 12.4H12.2L11.2 17.2L15.2 11.6H11.8L12.8 6.8Z" fill="currentColor" stroke="none" />
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <div class="brand-text">
+            <span>ReadyAt</span>
+            <span class="ac-badge">AC</span>
+          </div>
+          <span class="brand-pill" id="badgeBatteryInfo">T10F &bull; LFP 89.6 kWh</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="weather-pill" id="weatherDisplay">
+          <span id="weatherIcon">🌡️</span>
+          <span id="weatherText">--°C</span>
+        </div>
+        <button class="icon-btn" id="btnSettings" title="Ayarlar &amp; Model Seçimi">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="tabs-wrapper">
+      <button class="tab-btn active" id="tabTargetTime">Hedef Saat &rarr; Amper</button>
+      <button class="tab-btn" id="tabFixedAmp">Sabit Amper &rarr; Saat</button>
+    </div>
+
+    <!-- ÖNERİLEN AKIM / BİTİŞ GÖSTERGE KARTI -->
+    <div class="hero-card">
+      <div class="hero-label" id="heroLabel">ÖNERİLEN AKIM</div>
+      <div class="hero-primary">
+        <span class="accent" id="heroMainValue">--</span>
+      </div>
+
+      <div class="badge-row">
+        <div id="heroEarlyBadge" class="status-badge badge-early" style="display: none;">
+          <span>⚡ 6A Sınırı &bull; Erken Biter:</span>
+          <strong id="heroEarlyTime">--:--</strong>
+        </div>
+        <div id="heroBatteryHeatBadge" class="status-badge badge-battery-heat" style="display: none;">
+          <span id="heroBatteryHeatText">🔋 Batarya Isıtıcı</span>
+        </div>
+        <div id="heroPreconBadge" class="status-badge badge-precon" style="display: none;">
+          <span id="heroPreconText">🌡️ Kabin Isıtma</span>
+        </div>
+        <div id="heroCvBadge" class="status-badge badge-cv" style="display: none;">
+          <span id="heroCvBadgeText">🔋 Dengeleme / CV</span>
+        </div>
+      </div>
+
+      <div class="hero-sub" id="heroSubDesc">Hesaplanıyor...</div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-k">ŞEBEKE ENERJİ</span>
+          <span class="stat-v" id="statEnergy">-- kWh</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-k">GÜÇ</span>
+          <span class="stat-v" id="statPower">-- kW</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-k">NET VERİM</span>
+          <span class="stat-v" id="statEff">%--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BATARYA KARTI -->
+    <div class="card-battery-hero">
+      <div class="battery-header">
+        <span class="battery-header-title">Batarya Şarj Seviyesi</span>
+        <span class="battery-delta-tag" id="socDeltaTag">+60% &bull; 53.8 kWh Net</span>
+      </div>
+
+      <div class="range-group-hero">
+        <div class="range-labels-hero">
+          <span style="color: var(--text-muted);">Mevcut Şarj</span>
+          <span class="range-val-hero" id="dispCurrentSoc">%20</span>
+        </div>
+        <input type="range" id="sliderCurrentSoc" min="1" max="99" value="20">
+      </div>
+
+      <div class="range-group-hero">
+        <div class="range-labels-hero">
+          <span style="color: var(--text-muted);">Hedef Şarj</span>
+          <span class="range-val-hero" id="dispTargetSoc">%80</span>
+        </div>
+        <input type="range" id="sliderTargetSoc" min="2" max="100" value="80">
+      </div>
+    </div>
+
+    <!-- TERMAL GEÇMİŞ -->
+    <div class="card">
+      <div class="card-top">
+        <span class="card-title">Şarj Öncesi Sürüş (Termal Kütle)</span>
+        <span style="font-size: 11px; font-weight: 700; color: var(--accent);" id="tripStatusLabel">Soğuk Batarya</span>
+      </div>
+      <div class="trip-chips-grid">
+        <div class="trip-chip active" data-trip="cold">❄️ Yattı / &lt;7 km</div>
+        <div class="trip-chip" data-trip="mild">🚗 Şehir İçi (7-20km)</div>
+        <div class="trip-chip" data-trip="warm">🛣️ Uzun Yol (&gt;20km)</div>
+      </div>
+    </div>
+
+    <!-- PANEL 1: Hedef Saat Paneli -->
+    <div id="panelTargetTime" class="card">
+      <div class="card-top">
+        <span class="card-title">Zaman Planı</span>
+        <span style="font-size: 12px; font-weight: 800; color: var(--accent);" id="chargingWindowTag">--</span>
+      </div>
+
+      <div class="time-grid">
+        <div class="time-box">
+          <div class="time-box-top">
+            <span class="time-box-label">Başlat</span>
+            <span class="mini-pill-now" id="btnSetNow">Şimdi</span>
+          </div>
+          <input type="time" id="inputStartTime" class="time-input">
+        </div>
+
+        <div class="time-box">
+          <div class="time-box-top">
+            <span class="time-box-label">Arabaya Biniş</span>
+            <span style="font-size: 10px; color: var(--text-dim); font-weight: 700;">HEDEF</span>
+          </div>
+          <input type="time" id="inputTargetTime" class="time-input" value="07:30">
+        </div>
+      </div>
+
+      <div class="recommend-row">
+        <div class="recommend-pill active-rec" id="recTriCard">
+          <span class="rec-tag">Trifaze (3-Faz)</span>
+          <span class="rec-amp" id="recTriAmp">-- A</span>
+          <span class="rec-detail" id="recTriDetail">Hesaplanıyor</span>
+          <span class="rec-early-note" id="recTriEarly" style="display: none;"></span>
+        </div>
+        <div class="recommend-pill" id="recMonoCard">
+          <span class="rec-tag">Monofaze (1-Faz)</span>
+          <span class="rec-amp" id="recMonoAmp">-- A</span>
+          <span class="rec-detail" id="recMonoDetail">Hesaplanıyor</span>
+          <span class="rec-early-note" id="recMonoEarly" style="display: none;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: Sabit Amper Paneli -->
+    <div id="panelFixedAmp" class="card" style="display: none;">
+      <div class="card-top">
+        <span class="card-title">Şarj Gücü &amp; Amper Ayarı</span>
+        <span style="font-size: 12px; font-weight: 800; color: var(--accent);" id="fixedPowerTag">11.0 kW</span>
+      </div>
+
+      <div class="time-box">
+        <div class="time-box-top">
+          <span class="time-box-label">Şarj Başlatma Saati</span>
+          <span class="mini-pill-now" id="btnSetNow2">Şimdi</span>
+        </div>
+        <input type="time" id="inputStartTime2" class="time-input">
+      </div>
+
+      <div class="phase-selector-bar">
+        <button class="phase-btn active" id="btnPhase3">Trifaze (3-Faz)</button>
+        <button class="phase-btn" id="btnPhase1">Monofaze (1-Faz)</button>
+      </div>
+
+      <div class="range-group-hero">
+        <div class="range-labels-hero">
+          <span style="color: var(--text-muted); font-size: 12px;">Akım Limiti</span>
+          <span class="range-val-hero" id="dispManualAmp" style="font-size: 14px;">16A</span>
+        </div>
+        <input type="range" id="sliderManualAmp" min="6" max="32" value="16">
+      </div>
+
+      <div class="amp-quick-chips">
+        <div class="amp-chip" data-amp="8">8A</div>
+        <div class="amp-chip" data-amp="10">10A</div>
+        <div class="amp-chip" data-amp="13">13A</div>
+        <div class="amp-chip active" data-amp="16">16A</div>
+        <div class="amp-chip" data-amp="32">32A</div>
+      </div>
+    </div>
+
+    <!-- ŞEMATİK ÇUBUK: %0 - %100 TÜM BATARYA -->
+    <div class="schematic-progress-card">
+      <div class="schematic-top">
+        <span class="schematic-endpoint">Başlangıç: <strong id="schStartDisplay">%20</strong></span>
+        <span class="schematic-phase-pill" id="schCurrentPhaseLabel">⚡ Beklemede</span>
+        <span class="schematic-endpoint">Hedef: <strong id="schTargetDisplay">%80</strong></span>
+      </div>
+
+      <div class="schematic-track">
+        <div class="schematic-initial-fill" id="schInitialFill"></div>
+        <div class="schematic-fill" id="schProgressFill"></div>
+        <div class="schematic-marker schematic-marker-start" id="markerStart" title="Başlangıç Seviyesi"></div>
+        <div class="schematic-marker schematic-marker-target" id="markerTarget" title="Hedef Seviye"></div>
+      </div>
+
+      <div class="schematic-legend-row">
+        <span>%0</span>
+        <span id="lblLiveSocText" style="color: var(--accent); font-weight: 800;">Hazır</span>
+        <span>%100</span>
+      </div>
+
+      <div class="schematic-stages-row">
+        <div class="stage-item current" id="stageStepHeat">🔥 Isıtma</div>
+        <div class="stage-item" id="stageStepCC">⚡ CC (Ana Dolum)</div>
+        <div class="stage-item" id="stageStepCV">🔋 Dengeleme</div>
+        <div class="stage-item" id="stageStepPrecon">🌡️ Kabin Isıtma</div>
+      </div>
+    </div>
+
+    <!-- MERKEZİ ŞARJI BAŞLAT BUTONU -->
+    <button class="btn-start-charging" id="btnStartCharging">
+      <span id="btnStartChargingIcon">⚡</span>
+      <span id="btnStartChargingText">ŞARJI BAŞLAT</span>
+    </button>
+
+    <!-- 4'LÜ ALT KONTROL PANELİ -->
+    <div class="bottom-pills-4">
+      <div class="ctrl-pill active" id="toggleWinter">
+        <span class="ctrl-pill-icon" id="winterIcon">❄️</span>
+        <span class="ctrl-pill-title" id="winterTitle">Kış Modu</span>
+        <span class="ctrl-pill-sub" id="winterSub">Otomatik</span>
+      </div>
+
+      <div class="ctrl-pill" id="togglePrecon">
+        <span class="ctrl-pill-icon">🌡️</span>
+        <span class="ctrl-pill-title">İklimlendirme</span>
+        <span class="ctrl-pill-sub" id="preconSub">Kabin Isıtma</span>
+      </div>
+
+      <div class="ctrl-pill" id="toggleNotify">
+        <span class="ctrl-pill-icon">🔔</span>
+        <span class="ctrl-pill-title">Bildirim</span>
+        <span class="ctrl-pill-sub" id="notifySub">Alarm Kur</span>
+      </div>
+
+      <div class="ctrl-pill" id="btnOpenLogModal">
+        <span class="ctrl-pill-icon">📝</span>
+        <span class="ctrl-pill-title" style="color: var(--accent);">Şarjım Bitti</span>
+        <span class="ctrl-pill-sub" id="logSubStatus">Log Gir</span>
+      </div>
+    </div>
+
+    <div class="legal-footer">
+      Togg T10X &amp; T10F modelleri ile tam uyumlu bağımsız şarj asistanıdır.
+    </div>
+  </div>
+
+  <!-- MODAL: ŞARJIM BİTTİ (LOG) -->
+  <div class="modal-backdrop" id="modalLog">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 style="font-size: 15px; font-weight: 800; color: #fff;">Şarj Seansı Doğrulama</h3>
+        <button class="icon-btn" id="btnCloseLog">✕</button>
+      </div>
+
+      <p style="font-size: 11.5px; color: var(--text-muted); line-height: 1.4;">
+        Park işgal cezası yememek ve şebeke verimini kalibre etmek için gerçekleşen durumu seçin:
+      </p>
+
+      <div class="session-info-box">
+        <div class="session-info-item">
+          <span class="session-info-k">Başlangıç Şarjı</span>
+          <span class="session-info-v" id="logSnapStartSoc">%--</span>
+        </div>
+        <div class="session-info-item">
+          <span class="session-info-k">Hedef Şarj</span>
+          <span class="session-info-v" id="logSnapTargetSoc">%--</span>
+        </div>
+        <div class="session-info-item">
+          <span class="session-info-k">Başlatılan Saat</span>
+          <span class="session-info-v" id="logSnapStartTime">--:--</span>
+        </div>
+        <div class="session-info-item">
+          <span class="session-info-k">Öngörülen Bitiş</span>
+          <span class="session-info-v" id="logSnapPredictedFinish" style="color: var(--warning);">--:--</span>
+        </div>
+      </div>
+
+      <div class="log-btn-group">
+        <button class="log-btn ok" id="btnLogOk">
+          <span>✅ Tam Zamanında Bitti</span>
+          <span style="font-size: 11px; opacity: 0.85;">Sapma Yok</span>
+        </button>
+        <button class="log-btn early" id="btnLogEarly">
+          <span>⚡ Erken Bitti (İşgal Riski)</span>
+          <span style="font-size: 11px; opacity: 0.85;">Akımı Kıs</span>
+        </button>
+        <button class="log-btn miss" id="btnLogMissing">
+          <span>⚠️ Şarj Yetişmedi</span>
+          <span style="font-size: 11px; opacity: 0.85;">Eksik Kaldı</span>
+        </button>
+      </div>
+
+      <div class="info-callout">
+        💡 <strong>Park Cezası Koruması:</strong> "Erken Bitti" seçildiğinde sistem akımı kısarak şarjın tam ayrılış dakikanıza yayılmasını sağlar.
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AYARLAR -->
+  <div class="modal-backdrop" id="modalSettings">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 style="font-size: 15px; font-weight: 800; color: #fff;">Yapılandırma &amp; Model Seçimi</h3>
+        <button class="icon-btn" id="btnCloseSettings">✕</button>
+      </div>
+
+      <div class="info-callout">
+        🌤️ Seçtiğiniz il ve ilçenin anlık sıcaklığı doğrudan Open-Meteo üzerinden çekilerek pil sıcaklığı ve kabin ön ısıtma ihtiyacı hesaplanır.
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Togg Modeli</label>
+        <select id="selectModel" class="form-select">
+          <option value="T10F">Togg T10F (Fastback)</option>
+          <option value="T10X">Togg T10X (SUV)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Batarya Paketi</label>
+        <select id="selectBatteryPreset" class="form-select">
+          <option value="lfp_long">V2 Uzun Menzil (LFP • 89.6 kWh)</option>
+          <option value="nmc_long">V2 Uzun Menzil (NMC • 88.5 kWh)</option>
+          <option value="lfp_std">V1 Standart Menzil (LFP • 52.4 kWh)</option>
+          <option value="nmc_std">V1 Standart Menzil (NMC • 52.4 kWh)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">İl</label>
+        <select id="selectProvince" class="form-select"></select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">İlçe</label>
+        <select id="selectDistrict" class="form-select"></select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Dahili AC Şarj Sınırı / OBC (kW)</label>
+        <input type="number" id="inputOBC" class="form-input" step="1" value="11">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Şebeke / İstasyon Hız Katsayısı</label>
+        <input type="number" id="inputCalibFactor" class="form-input" step="0.01" min="0.75" max="1.25" value="1.00">
+      </div>
+
+      <button class="btn-action" id="btnSaveSettings">Kaydet</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'readyat_settings_v40';
+
+    const TURKEY_GEO = {
+      "Adana": { lat: 37.0000, lon: 35.3213, d: ["Seyhan", "Yüreğir", "Çukurova", "Sarıçam", "Ceyhan", "Kozan"] },
+      "Adıyaman": { lat: 37.7648, lon: 38.2786, d: ["Merkez", "Kahta", "Besni", "Gölbaşı"] },
+      "Afyonkarahisar": { lat: 38.7507, lon: 30.5567, d: ["Merkez", "Sandıklı", "Dinar", "Bolvadin", "Emirdağ"] },
+      "Ağrı": { lat: 39.7191, lon: 43.0503, d: ["Merkez", "Patnos", "Doğubayazıt"] },
+      "Amasya": { lat: 40.6534, lon: 35.8331, d: ["Merkez", "Merzifon", "Suluova"] },
+      "Ankara": { lat: 39.9334, lon: 32.8597, d: ["Çankaya", "Keçiören", "Yenimahalle", "Mamak", "Etimesgut", "Sincan", "Altındağ", "Gölbaşı"] },
+      "Antalya": { lat: 36.8969, lon: 30.7133, d: ["Muratpaşa", "Kepez", "Konyaaltı", "Alanya", "Manavgat", "Serik", "Kaş", "Kemer"] },
+      "Artvin": { lat: 41.1828, lon: 41.8183, d: ["Merkez", "Hopa", "Borçka"] },
+      "Aydın": { lat: 37.8560, lon: 27.8416, d: ["Efeler", "Nazilli", "Söke", "Kuşadası", "Didim"] },
+      "Balıkesir": { lat: 39.6484, lon: 27.8826, d: ["Karesi", "Altıeylül", "Bandırma", "Edremit", "Ayvalık"] },
+      "Bilecik": { lat: 40.1426, lon: 29.9793, d: ["Merkez", "Bozüyük", "Osmaneli", "Söğüt"] },
+      "Bingöl": { lat: 38.8854, lon: 40.4983, d: ["Merkez", "Genç", "Solhan"] },
+      "Bitlis": { lat: 38.4006, lon: 42.1095, d: ["Tatvan", "Merkez", "Ahlat"] },
+      "Bolu": { lat: 40.7350, lon: 31.6061, d: ["Merkez", "Gerede", "Mudurnu"] },
+      "Burdur": { lat: 37.7203, lon: 30.2908, d: ["Merkez", "Bucak", "Gölhisar"] },
+      "Bursa": { lat: 40.1885, lon: 29.0610, d: ["Nilüfer", "Osmangazi", "Yıldırım", "İnegöl", "Gemlik", "Mudanya"] },
+      "Çanakkale": { lat: 40.1553, lon: 26.4142, d: ["Merkez", "Biga", "Çan", "Gelibolu"] },
+      "Çankırı": { lat: 40.6013, lon: 33.6134, d: ["Merkez", "Çerkeş", "Ilgaz"] },
+      "Çorum": { lat: 40.5506, lon: 34.9556, d: ["Merkez", "Sungurlu", "Osmancık"] },
+      "Denizli": { lat: 37.7765, lon: 29.0864, d: ["Pamukkale", "Merkezefendi", "Çivril", "Acıpayam"] },
+      "Diyarbakır": { lat: 37.9144, lon: 40.2306, d: ["Kayapınar", "Bağlar", "Yenişehir", "Sur", "Ergani", "Bismil"] },
+      "Edirne": { lat: 41.6772, lon: 26.5557, d: ["Merkez", "Keşan", "Uzunköprü"] },
+      "Elazığ": { lat: 38.6810, lon: 39.2264, d: ["Merkez", "Kovancılar", "Karakoçan"] },
+      "Erzincan": { lat: 39.7500, lon: 39.5000, d: ["Merkez", "Tercan", "Üzümlü"] },
+      "Erzurum": { lat: 39.9043, lon: 41.2679, d: ["Yakutiye", "Palandöken", "Aziziye", "Oltu"] },
+      "Eskişehir": { lat: 39.7767, lon: 30.5206, d: ["Odunpazarı", "Tepebaşı", "Sivrihisar", "Çifteler", "Seyitgazi", "Alpu", "Mihalıççık", "Mahmudiye", "İnönü"] },
+      "Gaziantep": { lat: 37.0662, lon: 37.3833, d: ["Şahinbey", "Şehitkamil", "Nizip", "İslahiye"] },
+      "Giresun": { lat: 40.9128, lon: 38.3895, d: ["Merkez", "Bulancak", "Espiye"] },
+      "Gümüşhane": { lat: 40.4600, lon: 39.4700, d: ["Merkez", "Kelkit", "Şiran"] },
+      "Hakkari": { lat: 37.5833, lon: 43.7333, d: ["Yüksekova", "Merkez", "Şemdinli"] },
+      "Hatay": { lat: 36.4018, lon: 36.3498, d: ["Antakya", "İskenderun", "Defne", "Dörtyol", "Samandağ"] },
+      "Isparta": { lat: 37.7648, lon: 30.5566, d: ["Merkez", "Yalvaç", "Eğirdir"] },
+      "Mersin": { lat: 36.8121, lon: 34.6415, d: ["Yenişehir", "Mezitli", "Toroslar", "Akdeniz", "Tarsus", "Erdemli", "Silifke"] },
+      "İstanbul": { lat: 41.0082, lon: 28.9784, d: ["Kadıköy", "Beşiktaş", "Üsküdar", "Bakırköy", "Şişli", "Ataşehir", "Pendik", "Maltepe", "Esenyurt", "Başakşehir", "Sarıyer"] },
+      "İzmir": { lat: 38.4192, lon: 27.1287, d: ["Karşıyaka", "Bornova", "Konak", "Buca", "Çiğli", "Bayraklı", "Urla", "Çeşme", "Gaziemir"] },
+      "Kars": { lat: 40.6167, lon: 43.1000, d: ["Merkez", "Sarıkamış", "Kağızman"] },
+      "Kastamonu": { lat: 41.3887, lon: 33.7827, d: ["Merkez", "Tosya", "Taşköprü"] },
+      "Kayseri": { lat: 38.7312, lon: 35.4787, d: ["Melikgazi", "Kocasinan", "Talas", "Develi"] },
+      "Kırklareli": { lat: 41.7333, lon: 27.2167, d: ["Lüleburgaz", "Merkez", "Babaeski"] },
+      "Kırşehir": { lat: 39.1425, lon: 34.1709, d: ["Merkez", "Kaman", "Mucur"] },
+      "Kocaeli": { lat: 40.8533, lon: 29.8815, d: ["İzmit", "Gebze", "Darıca", "Körfez", "Gölcük", "Kartepe", "Başiskele"] },
+      "Konya": { lat: 37.8667, lon: 32.4833, d: ["Selçuklu", "Meram", "Karatay", "Ereğli", "Akşehir"] },
+      "Kütahya": { lat: 39.4167, lon: 29.9833, d: ["Merkez", "Tavşanlı", "Simav"] },
+      "Malatya": { lat: 38.3552, lon: 38.3095, d: ["Battalgazi", "Yeşilyurt", "Doğanşehir"] },
+      "Manisa": { lat: 38.6191, lon: 27.4289, d: ["Yunusemre", "Şehzadeler", "Akhisar", "Turgutlu", "Salihli"] },
+      "Kahramanmaraş": { lat: 37.5858, lon: 36.9371, d: ["Onikişubat", "Dulkadiroğlu", "Elbistan", "Afşin"] },
+      "Mardin": { lat: 37.3212, lon: 40.7245, d: ["Artuklu", "Kızıltepe", "Midyat", "Nusaybin"] },
+      "Muğla": { lat: 37.2153, lon: 28.3636, d: ["Bodrum", "Fethiye", "Marmaris", "Menteşe", "Milas", "Datça"] },
+      "Muş": { lat: 38.9462, lon: 41.7539, d: ["Merkez", "Bulanık", "Malazgirt"] },
+      "Nevşehir": { lat: 38.6939, lon: 34.6857, d: ["Merkez", "Ürgüp", "Avanos"] },
+      "Niğde": { lat: 37.9667, lon: 34.6833, d: ["Merkez", "Bor", "Çiftlik"] },
+      "Ordu": { lat: 40.9839, lon: 37.8764, d: ["Altınordu", "Ünye", "Fatsa"] },
+      "Rize": { lat: 41.0201, lon: 40.5234, d: ["Merkez", "Çayeli", "Ardeşen", "Pazar"] },
+      "Sakarya": { lat: 40.7569, lon: 30.3783, d: ["Adapazarı", "Serdivan", "Akyazı", "Erenler", "Hendek", "Sapanca"] },
+      "Samsun": { lat: 41.2928, lon: 36.3313, d: ["Atakum", "İlkadım", "Canik", "Bafra", "Çarşamba"] },
+      "Siirt": { lat: 37.9333, lon: 41.9500, d: ["Merkez", "Kurtalan"] },
+      "Sinop": { lat: 42.0231, lon: 35.1531, d: ["Merkez", "Boyabat", "Gerze"] },
+      "Sivas": { lat: 39.7477, lon: 37.0179, d: ["Merkez", "Şarkışla", "Yıldızeli"] },
+      "Tekirdağ": { lat: 40.9833, lon: 27.5167, d: ["Süleymanpaşa", "Çorlu", "Çerkezköy", "Kapaklı"] },
+      "Tokat": { lat: 40.3167, lon: 36.5500, d: ["Merkez", "Erbaa", "Turhal", "Niksar"] },
+      "Trabzon": { lat: 41.0015, lon: 39.7178, d: ["Ortahisar", "Akçaabat", "Yomra", "Araklı"] },
+      "Tunceli": { lat: 39.1079, lon: 39.5401, d: ["Merkez", "Pertek"] },
+      "Şanlıurfa": { lat: 37.1591, lon: 38.7969, d: ["Haliliye", "Eyyübiye", "Karaköprü", "Siverek"] },
+      "Uşak": { lat: 38.6823, lon: 29.4082, d: ["Merkez", "Banaz", "Eşme"] },
+      "Van": { lat: 38.4891, lon: 43.4089, d: ["İpekyolu", "Tuşba", "Edremit", "Erciş"] },
+      "Yozgat": { lat: 39.8181, lon: 34.8147, d: ["Merkez", "Sorgun", "Yerköy"] },
+      "Zonguldak": { lat: 41.4564, lon: 31.7987, d: ["Merkez", "Ereğli", "Çaycuma"] },
+      "Aksaray": { lat: 38.3687, lon: 34.0370, d: ["Merkez", "Ortaköy"] },
+      "Bayburt": { lat: 40.2552, lon: 40.2249, d: ["Merkez"] },
+      "Karaman": { lat: 37.1759, lon: 33.2287, d: ["Merkez", "Ermenek"] },
+      "Kırıkkale": { lat: 39.8468, lon: 33.5153, d: ["Merkez", "Yahşihan"] },
+      "Batman": { lat: 37.8812, lon: 41.1294, d: ["Merkez", "Kozluk"] },
+      "Şırnak": { lat: 37.5164, lon: 42.4611, d: ["Cizre", "Silopi", "Merkez"] },
+      "Bartın": { lat: 41.6344, lon: 32.3375, d: ["Merkez", "Amasra"] },
+      "Ardahan": { lat: 41.1105, lon: 42.7022, d: ["Merkez", "Göle"] },
+      "Iğdır": { lat: 39.9196, lon: 44.0458, d: ["Merkez"] },
+      "Yalova": { lat: 40.6500, lon: 29.2667, d: ["Merkez", "Çiftlikköy", "Çınarcık"] },
+      "Karabük": { lat: 41.2061, lon: 32.6204, d: ["Merkez", "Safranbolu"] },
+      "Kilis": { lat: 36.7184, lon: 37.1212, d: ["Merkez"] },
+      "Osmaniye": { lat: 37.0742, lon: 36.2472, d: ["Merkez", "Kadirli", "Düziçi"] },
+      "Düzce": { lat: 40.8438, lon: 31.1565, d: ["Merkez", "Akçakoca"] }
+    };
+
+    const BATTERY_PRESETS = {
+      lfp_long: { kwh: 89.6, chem: 'LFP', label: 'LFP 89.6 kWh' },
+      nmc_long: { kwh: 88.5, chem: 'NMC', label: 'NMC 88.5 kWh' },
+      lfp_std:  { kwh: 52.4, chem: 'LFP', label: 'LFP 52.4 kWh' },
+      nmc_std:  { kwh: 52.4, chem: 'NMC', label: 'NMC 52.4 kWh' }
+    };
+
+    let state = {
+      model: 'T10F',
+      batteryPreset: 'lfp_long',
+      batteryKwh: 89.6,
+      chemistry: 'LFP',
+      province: 'Eskişehir',
+      district: 'Odunpazarı',
+      obcKw: 11.0,
+      calibFactor: 1.00,
+      tripProfile: 'cold',
+      winterMode: 'auto',
+      preconMode: false,
+      notifyActive: false,
+      tab: 'targetTime',
+      targetPhaseChoice: 3,
+      currentSoc: 20,
+      targetSoc: 80,
+      manualPhase: 3,
+      manualAmp: 16,
+      startTime: '',
+      targetTime: '07:30',
+      isChargingActive: false,
+      activeSession: null
+    };
+
+    let currentAmbientTemp = 18;
+    let lastCalculatedPrediction = { 
+      predictedFinishStr: '--:--', 
+      finishDate: null, 
+      totalChargingMins: 0,
+      heatMins: 0,
+      preconMins: 0,
+      batThermalKwh: 0,
+      preconKwh: 0
+    };
+
+    function getNowTimeString() {
+      const d = new Date();
+      return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    }
+
+    function syncToCurrentTime() {
+      if (state.isChargingActive) return;
+      const nowStr = getNowTimeString();
+      state.startTime = nowStr;
+      const el1 = document.getElementById('inputStartTime');
+      const el2 = document.getElementById('inputStartTime2');
+      if (el1) el1.value = nowStr;
+      if (el2) el2.value = nowStr;
+      calculate();
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) syncToCurrentTime();
+    });
+    window.addEventListener('pageshow', () => syncToCurrentTime());
+    window.addEventListener('focus', () => syncToCurrentTime());
+
+    function updateBadgeHeader() {
+      const badge = document.getElementById('badgeBatteryInfo');
+      const bInfo = BATTERY_PRESETS[state.batteryPreset]?.label || `${state.batteryKwh} kWh`;
+      badge.innerText = `${state.model} • ${bInfo}`;
+    }
+
+    async function fetchWeatherByLocation() {
+      const pData = TURKEY_GEO[state.province] || TURKEY_GEO["Eskişehir"];
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${pData.lat}&longitude=${pData.lon}&current=temperature_2m`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.current) {
+          currentAmbientTemp = Math.round(data.current.temperature_2m);
+          document.getElementById('weatherText').innerText = `${currentAmbientTemp}°C ${state.province}`;
+          document.getElementById('weatherIcon').innerText = currentAmbientTemp <= 5 ? '❄️' : '🌤️';
+          updateWinterUI();
+          calculate();
+        }
+      } catch(e) {
+        document.getElementById('weatherText').innerText = `${currentAmbientTemp}°C ${state.province}`;
+        updateWinterUI();
+        calculate();
+      }
+    }
+
+    function updateWinterUI() {
+      const toggle = document.getElementById('toggleWinter');
+      const sub = document.getElementById('winterSub');
+
+      if (state.winterMode === 'auto') {
+        const isCold = (currentAmbientTemp <= 5);
+        toggle.classList.toggle('active', isCold);
+        sub.innerText = `Oto (${currentAmbientTemp}°C)`;
+      } else if (state.winterMode === 'on') {
+        toggle.classList.add('active');
+        sub.innerText = 'Açık';
+      } else {
+        toggle.classList.remove('active');
+        sub.innerText = 'Kapalı';
+      }
+    }
+
+    function getBatteryThermalHeatKwh() {
+      if (state.winterMode === 'off') return 0.0;
+      if (state.winterMode === 'auto' && currentAmbientTemp >= 14) return 0.0;
+
+      let estBatTemp = currentAmbientTemp;
+      if (state.tripProfile === 'mild') estBatTemp = Math.min(13, currentAmbientTemp + 6);
+      else if (state.tripProfile === 'warm') estBatTemp = 16;
+
+      if (estBatTemp >= 14) return 0.0;
+
+      const deltaT = 14 - estBatTemp;
+      const thermalEnergyKwh = (550 * 1.0 * deltaT) / 3600;
+      return Math.min(3.8, Math.max(0.1, thermalEnergyKwh));
+    }
+
+    function calculateDynamicPreconKwh() {
+      if (!state.preconMode) return 0.0;
+      const t = (currentAmbientTemp !== null) ? currentAmbientTemp : 15;
+      const deltaT = Math.max(0, 22 - t);
+      const baseKwh = (state.model === 'T10X') ? 0.25 : 0.20;
+      const degFactor = (state.model === 'T10X') ? 0.050 : 0.040;
+      const totalKwh = baseKwh + (deltaT * degFactor);
+      return Math.min(2.5, Math.max(0.2, totalKwh));
+    }
+
+    function resolveStartAndTargetDates(startStr, targetStr, now = new Date()) {
+      const [sH, sM] = startStr.split(':').map(Number);
+      const [tH, tM] = targetStr.split(':').map(Number);
+
+      let startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), sH, sM, 0, 0);
+      
+      if (startDate.getTime() < now.getTime() - 45 * 60000) {
+        startDate.setDate(startDate.getDate() + 1);
+      }
+
+      let targetDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), tH, tM, 0, 0);
+      
+      if (targetDate.getTime() <= startDate.getTime()) {
+        targetDate.setDate(targetDate.getDate() + 1);
+      }
+
+      return { startDate, targetDate };
+    }
+
+    function formatHHMM(date) {
+      return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+    }
+
+    function calculateChargingMinutes(startSoc, endSoc, rawKw, extraPreconKwh = 0) {
+      const batThermalKwh = getBatteryThermalHeatKwh();
+
+      if (startSoc >= endSoc && extraPreconKwh <= 0 && batThermalKwh <= 0) {
+        return { 
+          totalMinutes: 0, 
+          avgKw: rawKw, 
+          avgEff: 0.92, 
+          totalConsumedGridKwh: 0, 
+          heatMins: 0, 
+          preconMins: 0, 
+          batThermalKwh: 0 
+        };
+      }
+
+      const calib = state.calibFactor || 1.0;
+      const effectiveGridKw = Math.min(rawKw * calib, state.obcKw);
+
+      let baseEff = 0.93;
+      if (effectiveGridKw <= 2.5) baseEff = 0.85;
+      else if (effectiveGridKw <= 3.7) baseEff = 0.88;
+      else if (effectiveGridKw <= 7.4) baseEff = 0.91;
+
+      let segments = [];
+      if (state.chemistry === 'LFP') {
+        segments = [
+          { from: 0, to: 98, bmsMaxKw: 99.0, floorMins: 0 },
+          { from: 98, to: 100, bmsMaxKw: 2.0, floorMins: 38 }
+        ];
+      } else {
+        segments = [
+          { from: 0, to: 90, bmsMaxKw: 99.0, floorMins: 0 },
+          { from: 90, to: 95, bmsMaxKw: 7.5, floorMins: 35 },
+          { from: 95, to: 98, bmsMaxKw: 4.5, floorMins: 30 },
+          { from: 98, to: 100, bmsMaxKw: 1.5, floorMins: 35 }
+        ];
+      }
+
+      let totalMinutes = 0;
+      let totalNetBatteryKwh = 0;
+
+      for (const seg of segments) {
+        const sFrom = Math.max(startSoc, seg.from);
+        const sTo = Math.min(endSoc, seg.to);
+
+        if (sTo > sFrom) {
+          const deltaPct = sTo - sFrom;
+          const segKwh = (deltaPct / 100) * state.batteryKwh;
+          const cappedKw = Math.min(effectiveGridKw, seg.bmsMaxKw);
+          const netKw = Math.max(0.4, cappedKw * baseEff);
+
+          let segMins = (segKwh / netKw) * 60;
+          if (seg.floorMins > 0) {
+            const segRatio = deltaPct / (seg.to - seg.from);
+            const naturalFloor = seg.floorMins * segRatio;
+            if (segMins < naturalFloor) segMins = naturalFloor;
+          }
+
+          totalMinutes += segMins;
+          totalNetBatteryKwh += segKwh;
+        }
+      }
+
+      let heatMins = 0;
+      if (batThermalKwh > 0) {
+        const ptcPowerKw = Math.min(2.5, effectiveGridKw * 0.75);
+        heatMins = (batThermalKwh / ptcPowerKw) * 60;
+        
+        const remainingKw = Math.max(0.2, (effectiveGridKw - ptcPowerKw) * baseEff);
+        const penaltyRatio = Math.max(0.25, (effectiveGridKw * baseEff) / remainingKw - 1.0);
+        totalMinutes += Math.min(heatMins * 1.5, heatMins * penaltyRatio);
+      }
+
+      let preconMins = 0;
+      if (extraPreconKwh > 0) {
+        preconMins = (extraPreconKwh / (effectiveGridKw * baseEff)) * 60;
+        totalMinutes += preconMins;
+      }
+
+      const totalConsumedGridKwh = (totalNetBatteryKwh / baseEff) + batThermalKwh + extraPreconKwh;
+      const avgEff = totalNetBatteryKwh > 0 ? (totalNetBatteryKwh / totalConsumedGridKwh) : baseEff;
+      const totalHours = totalMinutes / 60;
+      const avgKw = totalHours > 0 ? (totalConsumedGridKwh / totalHours) : effectiveGridKw;
+
+      return { 
+        totalMinutes, 
+        avgKw, 
+        avgEff, 
+        totalConsumedGridKwh, 
+        heatMins, 
+        preconMins, 
+        batThermalKwh 
+      };
+    }
+
+    function updateSchematicBar() {
+      const schStartDisplay = document.getElementById('schStartDisplay');
+      const schTargetDisplay = document.getElementById('schTargetDisplay');
+      const schPhaseLabel = document.getElementById('schCurrentPhaseLabel');
+      
+      const schInitialFill = document.getElementById('schInitialFill');
+      const schProgressFill = document.getElementById('schProgressFill');
+      const markerStart = document.getElementById('markerStart');
+      const markerTarget = document.getElementById('markerTarget');
+      const lblLiveSocText = document.getElementById('lblLiveSocText');
+      
+      const stepHeat = document.getElementById('stageStepHeat');
+      const stepCC = document.getElementById('stageStepCC');
+      const stepCV = document.getElementById('stageStepCV');
+      const stepPrecon = document.getElementById('stageStepPrecon');
+
+      const startSoc = state.isChargingActive ? state.activeSession.startSoc : state.currentSoc;
+      const targetSoc = state.isChargingActive ? state.activeSession.targetSoc : state.targetSoc;
+
+      schStartDisplay.innerText = `%${startSoc}`;
+      schTargetDisplay.innerText = `%${targetSoc}`;
+
+      schInitialFill.style.width = `${startSoc}%`;
+      markerStart.style.left = `calc(${startSoc}% - 1.5px)`;
+      markerTarget.style.left = `calc(${targetSoc}% - 1.5px)`;
+
+      if (!state.isChargingActive) {
+        schProgressFill.style.left = `${startSoc}%`;
+        schProgressFill.style.width = `0%`;
+        schPhaseLabel.innerText = '⚡ Beklemede';
+        lblLiveSocText.innerText = `Hazır (%${startSoc} → %${targetSoc})`;
+        stepHeat.classList.remove('current');
+        stepCC.classList.add('current');
+        stepCV.classList.remove('current');
+        stepPrecon.classList.remove('current');
+        return;
+      }
+
+      const now = new Date();
+      const sessionStartDate = new Date(state.activeSession.startTimeDate || now);
+      const elapsedMins = Math.max(0, Math.floor((now.getTime() - sessionStartDate.getTime()) / 60000));
+      const totalEstMins = Math.max(1, state.activeSession.totalMins || 60);
+
+      const progressRatio = Math.min(1.0, elapsedMins / totalEstMins);
+      const currentEstSoc = Math.min(targetSoc, Math.round(startSoc + (targetSoc - startSoc) * progressRatio));
+
+      schProgressFill.style.left = `${startSoc}%`;
+      schProgressFill.style.width = `${Math.max(0, currentEstSoc - startSoc)}%`;
+
+      lblLiveSocText.innerText = `Şarjda: %${currentEstSoc} (Hedef: %${targetSoc})`;
+
+      const heatDuration = state.activeSession?.heatMins || 0;
+      const isHeatingNow = (elapsedMins < heatDuration && heatDuration > 4);
+
+      stepHeat.classList.remove('current');
+      stepCC.classList.remove('current');
+      stepCV.classList.remove('current');
+      stepPrecon.classList.remove('current');
+
+      if (isHeatingNow) {
+        schPhaseLabel.innerText = `🔥 Batarya Isıtılıyor (%${currentEstSoc})`;
+        stepHeat.classList.add('current');
+      } else if (state.preconMode && progressRatio > 0.88) {
+        schPhaseLabel.innerText = `🌡️ Ön İklimlendirme (%${currentEstSoc})`;
+        stepPrecon.classList.add('current');
+      } else if (currentEstSoc >= 98 && targetSoc >= 99) {
+        schPhaseLabel.innerText = `🔋 Dengeleme / CV (%${currentEstSoc})`;
+        stepCV.classList.add('current');
+      } else {
+        schPhaseLabel.innerText = `⚡ Sabit Akım (%${currentEstSoc})`;
+        stepCC.classList.add('current');
+      }
+    }
+
+    function calculate() {
+      state.currentSoc = parseInt(document.getElementById('sliderCurrentSoc').value);
+      state.targetSoc = parseInt(document.getElementById('sliderTargetSoc').value);
+      if (state.currentSoc >= state.targetSoc) {
+        state.targetSoc = Math.min(100, state.currentSoc + 1);
+        document.getElementById('sliderTargetSoc').value = state.targetSoc;
+      }
+
+      document.getElementById('dispCurrentSoc').innerText = `%${state.currentSoc}`;
+      document.getElementById('dispTargetSoc').innerText = `%${state.targetSoc}`;
+      const deltaSoc = state.targetSoc - state.currentSoc;
+      const netBatteryKwh = (deltaSoc / 100) * state.batteryKwh;
+
+      const preconEnergyKwh = calculateDynamicPreconKwh();
+      const batThermalKwh = getBatteryThermalHeatKwh();
+
+      document.getElementById('socDeltaTag').innerText = `+${deltaSoc}% • ${netBatteryKwh.toFixed(1)} kWh Net`;
+
+      const now = new Date();
+      const heroCvBadge = document.getElementById('heroCvBadge');
+      const heroCvBadgeText = document.getElementById('heroCvBadgeText');
+      const heroEarlyBadge = document.getElementById('heroEarlyBadge');
+      const heroEarlyTime = document.getElementById('heroEarlyTime');
+      const heroPreconBadge = document.getElementById('heroPreconBadge');
+      const heroBatteryHeatBadge = document.getElementById('heroBatteryHeatBadge');
+      const heroBatteryHeatText = document.getElementById('heroBatteryHeatText');
+
+      heroPreconBadge.style.display = state.preconMode ? 'inline-flex' : 'none';
+      document.getElementById('heroPreconText').innerText = `🌡️ Kabin (+${preconEnergyKwh.toFixed(1)} kWh)`;
+
+      if (batThermalKwh > 0.1) {
+        heroBatteryHeatBadge.style.display = 'inline-flex';
+        heroBatteryHeatText.innerText = `🔥 Batarya Isıtıcı (+${batThermalKwh.toFixed(1)} kWh)`;
+      } else {
+        heroBatteryHeatBadge.style.display = 'none';
+      }
+
+      if (state.chemistry === 'LFP' && state.targetSoc > 98) {
+        heroCvBadge.style.display = 'inline-flex';
+        heroCvBadgeText.innerText = '🔋 LFP Hücre Dengeleme';
+      } else if (state.chemistry === 'NMC' && state.targetSoc > 90) {
+        heroCvBadge.style.display = 'inline-flex';
+        heroCvBadgeText.innerText = '🔋 NMC CV Kısması';
+      } else {
+        heroCvBadge.style.display = 'none';
+      }
+
+      if (state.tab === 'targetTime') {
+        const { startDate, targetDate } = resolveStartAndTargetDates(
+          state.startTime || getNowTimeString(),
+          state.targetTime,
+          now
+        );
+
+        const totalMinutesRaw = Math.max(1, Math.round((targetDate.getTime() - startDate.getTime()) / 60000));
+        const wH = Math.floor(totalMinutesRaw / 60);
+        const wM = totalMinutesRaw % 60;
+        document.getElementById('chargingWindowTag').innerText = `${wH} sa ${wM} dk süre`;
+
+        function solveAmps(phase) {
+          let exactAmp = null;
+          for (let a = 6; a <= 32; a++) {
+            const rawKw = (phase * 230 * a) / 1000;
+            const cappedNominalKw = Math.min(rawKw, state.obcKw);
+            const res = calculateChargingMinutes(state.currentSoc, state.targetSoc, rawKw, preconEnergyKwh);
+
+            if (res.totalMinutes <= totalMinutesRaw) {
+              const actualFinishDate = new Date(startDate.getTime() + res.totalMinutes * 60000);
+              const minsDiff = Math.round((targetDate.getTime() - actualFinishDate.getTime()) / 60000);
+              
+              // Erken Bitiş Rozeti YALNIZCA en alt sınır olan 6A seçildiğinde ve 6A bile çok erken bittiğinde tetiklenir
+              const isFloorEarly = (a === 6) && (minsDiff > 12);
+
+              exactAmp = {
+                amp: a,
+                nominalKw: cappedNominalKw,
+                avgKw: res.avgKw,
+                eff: res.avgEff,
+                minsNeeded: res.totalMinutes,
+                totalConsumedGridKwh: res.totalConsumedGridKwh,
+                heatMins: res.heatMins,
+                preconMins: res.preconMins,
+                batThermalKwh: res.batThermalKwh,
+                early: isFloorEarly,
+                finishDate: actualFinishDate,
+                finishTimeStr: formatHHMM(actualFinishDate),
+                totalChargingMins: Math.round(res.totalMinutes)
+              };
+              break;
+            }
+          }
+
+          if (exactAmp) {
+            return { possible: true, ...exactAmp };
+          }
+          return { possible: false };
+        }
+
+        const tri = solveAmps(3);
+        const mono = solveAmps(1);
+
+        if (tri.possible) {
+          document.getElementById('recTriAmp').innerText = `${tri.amp}A`;
+          document.getElementById('recTriDetail').innerText = `${tri.nominalKw.toFixed(1)} kW (Trifaze)`;
+          if (tri.early) {
+            document.getElementById('recTriEarly').style.display = 'block';
+            document.getElementById('recTriEarly').innerText = `⚡ Bitiş: ${tri.finishTimeStr}`;
+          } else {
+            document.getElementById('recTriEarly').style.display = 'none';
+          }
+        } else {
+          document.getElementById('recTriAmp').innerText = 'Yetmez';
+          document.getElementById('recTriDetail').innerText = '11 kW tavanı aşıldı';
+          document.getElementById('recTriEarly').style.display = 'none';
+        }
+
+        if (mono.possible) {
+          document.getElementById('recMonoAmp').innerText = `${mono.amp}A`;
+          document.getElementById('recMonoDetail').innerText = `${mono.nominalKw.toFixed(1)} kW (Monofaze)`;
+          if (mono.early) {
+            document.getElementById('recMonoEarly').style.display = 'block';
+            document.getElementById('recMonoEarly').innerText = `⚡ Bitiş: ${mono.finishTimeStr}`;
+          } else {
+            document.getElementById('recMonoEarly').style.display = 'none';
+          }
+        } else {
+          document.getElementById('recMonoAmp').innerText = 'Yetmez';
+          document.getElementById('recMonoDetail').innerText = 'Monofaze yetersiz';
+          document.getElementById('recMonoEarly').style.display = 'none';
+        }
+
+        const selectedSolution = (state.targetPhaseChoice === 3) ? tri : mono;
+        const phaseName = (state.targetPhaseChoice === 3) ? 'Trifaze' : 'Monofaze';
+        document.getElementById('heroLabel').innerText = `ÖNERİLEN ${phaseName.toUpperCase()} AKIM`;
+
+        document.getElementById('recTriCard').classList.toggle('active-rec', state.targetPhaseChoice === 3);
+        document.getElementById('recMonoCard').classList.toggle('active-rec', state.targetPhaseChoice === 1);
+
+        if (selectedSolution.possible) {
+          document.getElementById('heroMainValue').innerText = `${selectedSolution.amp}A`;
+          document.getElementById('statPower').innerText = `${selectedSolution.nominalKw.toFixed(1)} kW`;
+          document.getElementById('statEff').innerText = `%${Math.round(selectedSolution.eff * 100)}`;
+          document.getElementById('statEnergy').innerText = `${selectedSolution.totalConsumedGridKwh.toFixed(1)} kWh`;
+
+          lastCalculatedPrediction.predictedFinishStr = selectedSolution.finishTimeStr;
+          lastCalculatedPrediction.finishDate = selectedSolution.finishDate;
+          lastCalculatedPrediction.totalChargingMins = selectedSolution.totalChargingMins;
+          lastCalculatedPrediction.heatMins = selectedSolution.heatMins;
+          lastCalculatedPrediction.preconMins = selectedSolution.preconMins;
+          lastCalculatedPrediction.batThermalKwh = selectedSolution.batThermalKwh;
+          lastCalculatedPrediction.preconKwh = preconEnergyKwh;
+
+          if (selectedSolution.early) {
+            heroEarlyBadge.style.display = 'inline-flex';
+            heroEarlyTime.innerText = selectedSolution.finishTimeStr;
+            document.getElementById('heroSubDesc').innerText = `Minimum 6A tabanı nedeniyle şarj ${formatHHMM(targetDate)} yerine daha erken (${selectedSolution.finishTimeStr}) tamamlanır.`;
+          } else {
+            heroEarlyBadge.style.display = 'none';
+            let desc = `${phaseName} ${selectedSolution.amp}A (${selectedSolution.nominalKw.toFixed(1)} kW) ile en geç ${selectedSolution.finishTimeStr}'de hazır.`;
+            if (selectedSolution.finishTimeStr !== formatHHMM(targetDate)) {
+              desc += ` (${formatHHMM(targetDate)} hedefinden önce güvenle tamamlanır)`;
+            }
+            if (selectedSolution.batThermalKwh > 0.1) desc += ` (Batarya ısıtma dahil)`;
+            if (state.preconMode) desc += ` (Kabin ısıtma dahil)`;
+            document.getElementById('heroSubDesc').innerText = desc;
+          }
+        } else {
+          heroEarlyBadge.style.display = 'none';
+          document.getElementById('heroMainValue').innerText = 'Yetmez';
+          document.getElementById('heroSubDesc').innerText = `${wH} sa ${wM} dk sürede dolum için ${phaseName} kapasitesi yetersiz.`;
+          document.getElementById('statPower').innerText = '-- kW';
+          document.getElementById('statEff').innerText = '%--';
+          document.getElementById('statEnergy').innerText = '-- kWh';
+          lastCalculatedPrediction.predictedFinishStr = '--:--';
+          lastCalculatedPrediction.finishDate = null;
+          lastCalculatedPrediction.totalChargingMins = 0;
+        }
+
+      } else if (state.tab === 'fixedAmp') {
+        document.getElementById('heroLabel').innerText = 'ŞARJIN BİTECEĞİ SAAT';
+        heroEarlyBadge.style.display = 'none';
+
+        const rawKw = (state.manualPhase * 230 * state.manualAmp) / 1000;
+        const cappedNominalKw = Math.min(rawKw, state.obcKw);
+        document.getElementById('fixedPowerTag').innerText = `${cappedNominalKw.toFixed(1)} kW (${state.manualPhase === 3 ? 'Trifaze' : 'Monofaze'})`;
+
+        const res = calculateChargingMinutes(state.currentSoc, state.targetSoc, rawKw, preconEnergyKwh);
+        const totalMinutes = Math.round(res.totalMinutes);
+
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+
+        const [sH, sM] = (state.startTime || getNowTimeString()).split(':').map(Number);
+        let startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), sH, sM, 0, 0);
+        if (startDate.getTime() < now.getTime() - 45 * 60000) {
+          startDate.setDate(startDate.getDate() + 1);
+        }
+
+        const finishDate = new Date(startDate.getTime() + totalMinutes * 60000);
+        const fH = String(finishDate.getHours()).padStart(2, '0');
+        const fM = String(finishDate.getMinutes()).padStart(2, '0');
+
+        document.getElementById('heroMainValue').innerText = `${fH}:${fM}`;
+        document.getElementById('statEnergy').innerText = `${res.totalConsumedGridKwh.toFixed(1)} kWh`;
+        document.getElementById('statPower').innerText = `${cappedNominalKw.toFixed(1)} kW`;
+        document.getElementById('statEff').innerText = `%${Math.round(res.avgEff * 100)}`;
+
+        lastCalculatedPrediction.predictedFinishStr = `${fH}:${fM}`;
+        lastCalculatedPrediction.finishDate = finishDate;
+        lastCalculatedPrediction.totalChargingMins = totalMinutes;
+        lastCalculatedPrediction.heatMins = res.heatMins;
+        lastCalculatedPrediction.preconMins = res.preconMins;
+        lastCalculatedPrediction.batThermalKwh = res.batThermalKwh;
+        lastCalculatedPrediction.preconKwh = preconEnergyKwh;
+
+        const isDiffDay = finishDate.getDate() !== startDate.getDate();
+        let desc = `${isDiffDay ? 'Ertesi gün ' : 'Bugün '}${fH}:${fM}'de hazır (${h} sa ${m} dk sürer).`;
+        if (res.batThermalKwh > 0.1) desc += ` (+${res.batThermalKwh.toFixed(1)} kWh batarya ısıtma)`;
+        if (state.preconMode) desc += ` (+kabin ısıtma)`;
+        document.getElementById('heroSubDesc').innerText = desc;
+      }
+
+      updateSchematicBar();
+      saveState();
+    }
+
+    function createIcsCalendarAlarm(targetFinishDate) {
+      if (!targetFinishDate) return;
+      const pad = n => String(n).padStart(2, '0');
+      const toIcsDate = d => `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
+
+      const start = targetFinishDate;
+      const end = new Date(targetFinishDate.getTime() + 15 * 60000);
+
+      const icsData = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//ReadyAt//Togg Charging//TR",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        "BEGIN:VEVENT",
+        `UID:${Date.now()}@readyat.togg`,
+        `DTSTAMP:${toIcsDate(new Date())}`,
+        `DTSTART:${toIcsDate(start)}`,
+        `DTEND:${toIcsDate(end)}`,
+        `SUMMARY:⚡ Togg Şarjı Bitiyor (İşgal Riski)`,
+        `DESCRIPTION:ReadyAt: Togg aracınızın şarjı 15 dakika içinde tamamlanacaktır. Park işgal cezası yememek için aracı çekmeyi unutmayın!`,
+        "BEGIN:VALARM",
+        "TRIGGER:-PT15M",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:ReadyAt: Togg Şarjı Bitiyor!",
+        "END:VALARM",
+        "END:VEVENT",
+        "END:VCALENDAR"
+      ].join("\r\n");
+
+      try {
+        const blob = new Blob([icsData], { type: "text/calendar;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.setAttribute("download", "ReadyAt-Togg-Alarm.ics");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch(e) {
+        const uri = "data:text/calendar;charset=utf8," + encodeURIComponent(icsData);
+        window.open(uri, "_blank");
+      }
+    }
+
+    function populateProvinces() {
+      const pSel = document.getElementById('selectProvince');
+      pSel.innerHTML = '';
+      const provs = Object.keys(TURKEY_GEO).sort((a,b) => a.localeCompare(b, 'tr'));
+      provs.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.innerText = p;
+        pSel.appendChild(opt);
+      });
+      pSel.value = state.province || "Eskişehir";
+      populateDistricts(pSel.value);
+    }
+
+    function populateDistricts(provinceName) {
+      const dSel = document.getElementById('selectDistrict');
+      dSel.innerHTML = '';
+      const pData = TURKEY_GEO[provinceName];
+      if (pData && pData.d) {
+        pData.d.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.innerText = d;
+          dSel.appendChild(opt);
+        });
+      }
+      dSel.value = state.district || (pData?.d[0] || "");
+    }
+
+    document.getElementById('selectProvince').addEventListener('change', (e) => {
+      populateDistricts(e.target.value);
+    });
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { Object.assign(state, JSON.parse(saved)); } catch(e){}
+      }
+      
+      if (!state.isChargingActive) {
+        state.startTime = getNowTimeString();
+      }
+
+      populateProvinces();
+      document.getElementById('selectProvince').value = state.province;
+      populateDistricts(state.province);
+      document.getElementById('selectDistrict').value = state.district;
+
+      document.getElementById('selectModel').value = state.model || 'T10F';
+      document.getElementById('selectBatteryPreset').value = state.batteryPreset;
+      document.getElementById('inputOBC').value = state.obcKw;
+      document.getElementById('inputCalibFactor').value = (state.calibFactor || 1.00).toFixed(2);
+      document.getElementById('sliderCurrentSoc').value = state.currentSoc;
+      document.getElementById('sliderTargetSoc').value = state.targetSoc;
+      document.getElementById('inputStartTime').value = state.startTime;
+      document.getElementById('inputStartTime2').value = state.startTime;
+      document.getElementById('inputTargetTime').value = state.targetTime;
+      document.getElementById('sliderManualAmp').value = state.manualAmp;
+      document.getElementById('dispManualAmp').innerText = `${state.manualAmp}A`;
+
+      document.querySelectorAll('.trip-chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-trip') === state.tripProfile);
+      });
+      updateTripStatusLabel();
+
+      updatePhaseUI();
+      updateQuickChipUI();
+      updateBadgeHeader();
+      updateWinterUI();
+      updateChargingButtonUI();
+      updateSchematicBar();
+
+      if (state.preconMode) {
+        document.getElementById('togglePrecon').classList.add('active');
+        document.getElementById('preconSub').innerText = 'Açık';
+      }
+      if (state.notifyActive) {
+        document.getElementById('toggleNotify').classList.add('active');
+        document.getElementById('notifySub').innerText = 'Alarm Aktif';
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function updateTripStatusLabel() {
+      const lbl = document.getElementById('tripStatusLabel');
+      if (state.tripProfile === 'cold') lbl.innerText = 'Soğuk Batarya (Isıtıcı Aktif)';
+      else if (state.tripProfile === 'mild') lbl.innerText = 'Ilık Batarya (Düşük Isıtma)';
+      else lbl.innerText = 'Sıcak Batarya (Isıtıcı Kapalı)';
+    }
+
+    function updatePhaseUI() {
+      document.getElementById('btnPhase3').classList.toggle('active', state.manualPhase === 3);
+      document.getElementById('btnPhase1').classList.toggle('active', state.manualPhase === 1);
+    }
+
+    function updateQuickChipUI() {
+      document.querySelectorAll('.amp-chip').forEach(c => {
+        c.classList.toggle('active', parseInt(c.getAttribute('data-amp')) === state.manualAmp);
+      });
+    }
+
+    function updateChargingButtonUI() {
+      const btn = document.getElementById('btnStartCharging');
+      const icon = document.getElementById('btnStartChargingIcon');
+      const text = document.getElementById('btnStartChargingText');
+      const logSub = document.getElementById('logSubStatus');
+
+      if (state.isChargingActive) {
+        btn.classList.add('active-session');
+        icon.innerText = '🟢';
+        text.innerText = `ŞARJ OLUYOR • BİTİŞ: ${state.activeSession?.predictedFinish || '--:--'}`;
+        logSub.innerText = 'Seans Aktif';
+      } else {
+        btn.classList.remove('active-session');
+        icon.innerText = '⚡';
+        text.innerText = 'ŞARJI BAŞLAT';
+        logSub.innerText = 'Log Gir';
+      }
+    }
+
+    document.getElementById('btnStartCharging').addEventListener('click', () => {
+      if (!state.isChargingActive) {
+        state.isChargingActive = true;
+        const now = new Date();
+        state.activeSession = {
+          startSoc: state.currentSoc,
+          targetSoc: state.targetSoc,
+          startTime: state.startTime || getNowTimeString(),
+          startTimeDate: now.getTime(),
+          predictedFinish: lastCalculatedPrediction.predictedFinishStr,
+          totalMins: Math.max(1, lastCalculatedPrediction.totalChargingMins),
+          heatMins: lastCalculatedPrediction.heatMins,
+          preconMins: lastCalculatedPrediction.preconMins
+        };
+        updateChargingButtonUI();
+        updateSchematicBar();
+      } else {
+        if (confirm("Mevcut şarj seansını tamamlayıp verileri kaydetmek istiyor musunuz?")) {
+          openLogModal();
+        }
+      }
+      saveState();
+    });
+
+    function openLogModal() {
+      const snapStartSoc = state.isChargingActive ? state.activeSession.startSoc : state.currentSoc;
+      const snapTargetSoc = state.isChargingActive ? state.activeSession.targetSoc : state.targetSoc;
+      const snapStartTime = state.isChargingActive ? state.activeSession.startTime : (state.startTime || getNowTimeString());
+      const snapPredicted = state.isChargingActive ? state.activeSession.predictedFinish : lastCalculatedPrediction.predictedFinishStr;
+
+      document.getElementById('logSnapStartSoc').innerText = `%${snapStartSoc}`;
+      document.getElementById('logSnapTargetSoc').innerText = `%${snapTargetSoc}`;
+      document.getElementById('logSnapStartTime').innerText = snapStartTime;
+      document.getElementById('logSnapPredictedFinish').innerText = snapPredicted;
+
+      document.getElementById('modalLog').classList.add('open');
+    }
+
+    document.getElementById('btnOpenLogModal').addEventListener('click', openLogModal);
+    document.getElementById('btnCloseLog').addEventListener('click', () => {
+      document.getElementById('modalLog').classList.remove('open');
+    });
+
+    document.getElementById('btnLogOk').addEventListener('click', () => {
+      state.isChargingActive = false;
+      state.activeSession = null;
+      updateChargingButtonUI();
+      updateSchematicBar();
+      document.getElementById('modalLog').classList.remove('open');
+      saveState();
+      alert("Harika! Şarj tam vaktinde tamamlandı.");
+    });
+
+    document.getElementById('btnLogEarly').addEventListener('click', () => {
+      const minsEarly = prompt("Şarj hedef saatten yaklaşık kaç dakika erken bitti? (Örn: 20)", "20");
+      if (minsEarly) {
+        const m = parseInt(minsEarly);
+        const totalSessionMins = Math.max(30, state.activeSession?.totalMins || 240);
+        if (!isNaN(m) && m > 0) {
+          const adjustment = 1 + (m / totalSessionMins);
+          state.calibFactor = Math.min(1.25, (state.calibFactor || 1.0) * adjustment);
+          document.getElementById('inputCalibFactor').value = state.calibFactor.toFixed(2);
+          state.isChargingActive = false;
+          state.activeSession = null;
+          updateChargingButtonUI();
+          updateSchematicBar();
+          document.getElementById('modalLog').classList.remove('open');
+          saveState();
+          calculate();
+          alert(`Hız katsayınız ${state.calibFactor.toFixed(2)}x olarak güncellendi. Sonraki şarjda akım bitişe yayılacak.`);
+        }
+      }
+    });
+
+    document.getElementById('btnLogMissing').addEventListener('click', () => {
+      const userVal = prompt("Şarj yetişmediğinde batarya yüzde kaçta kaldı? (Örn: 76)", "");
+      if (userVal) {
+        const actualSoc = parseInt(userVal);
+        const refStart = state.activeSession ? state.activeSession.startSoc : state.currentSoc;
+        const refTarget = state.activeSession ? state.activeSession.targetSoc : state.targetSoc;
+
+        if (!isNaN(actualSoc) && actualSoc < refTarget) {
+          const plannedDelta = Math.max(1, refTarget - refStart);
+          const actualDelta = Math.max(1, actualSoc - refStart);
+          const ratio = actualDelta / plannedDelta;
+          state.calibFactor = Math.max(0.75, Math.min(1.05, (state.calibFactor || 1.0) * ratio));
+          document.getElementById('inputCalibFactor').value = state.calibFactor.toFixed(2);
+          state.isChargingActive = false;
+          state.activeSession = null;
+          updateChargingButtonUI();
+          updateSchematicBar();
+          document.getElementById('modalLog').classList.remove('open');
+          saveState();
+          calculate();
+          alert(`Şebeke katsayısı ${state.calibFactor.toFixed(2)}x olarak güncellendi.`);
+        }
+      }
+    });
+
+    const tabTargetTime = document.getElementById('tabTargetTime');
+    const tabFixedAmp = document.getElementById('tabFixedAmp');
+    const panelTargetTime = document.getElementById('panelTargetTime');
+    const panelFixedAmp = document.getElementById('panelFixedAmp');
+
+    tabTargetTime.addEventListener('click', () => {
+      state.tab = 'targetTime';
+      tabTargetTime.classList.add('active');
+      tabFixedAmp.classList.remove('active');
+      panelTargetTime.style.display = 'flex';
+      panelFixedAmp.style.display = 'none';
+      calculate();
+    });
+
+    tabFixedAmp.addEventListener('click', () => {
+      state.tab = 'fixedAmp';
+      tabFixedAmp.classList.add('active');
+      tabTargetTime.classList.remove('active');
+      panelFixedAmp.style.display = 'flex';
+      panelTargetTime.style.display = 'none';
+      calculate();
+    });
+
+    document.getElementById('recTriCard').addEventListener('click', () => {
+      state.targetPhaseChoice = 3;
+      calculate();
+    });
+
+    document.getElementById('recMonoCard').addEventListener('click', () => {
+      state.targetPhaseChoice = 1;
+      calculate();
+    });
+
+    document.querySelectorAll('.trip-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.trip-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        state.tripProfile = chip.getAttribute('data-trip');
+        updateTripStatusLabel();
+        calculate();
+      });
+    });
+
+    document.getElementById('sliderCurrentSoc').addEventListener('input', calculate);
+    document.getElementById('sliderTargetSoc').addEventListener('input', calculate);
+
+    document.getElementById('inputStartTime').addEventListener('input', (e) => {
+      state.startTime = e.target.value;
+      document.getElementById('inputStartTime2').value = e.target.value;
+      calculate();
+    });
+
+    document.getElementById('inputStartTime2').addEventListener('input', (e) => {
+      state.startTime = e.target.value;
+      document.getElementById('inputStartTime').value = e.target.value;
+      calculate();
+    });
+
+    document.getElementById('btnSetNow').addEventListener('click', syncToCurrentTime);
+    document.getElementById('btnSetNow2').addEventListener('click', syncToCurrentTime);
+
+    document.getElementById('inputTargetTime').addEventListener('input', (e) => {
+      state.targetTime = e.target.value;
+      calculate();
+    });
+
+    document.getElementById('btnPhase3').addEventListener('click', () => {
+      state.manualPhase = 3;
+      updatePhaseUI();
+      calculate();
+    });
+
+    document.getElementById('btnPhase1').addEventListener('click', () => {
+      state.manualPhase = 1;
+      updatePhaseUI();
+      calculate();
+    });
+
+    document.getElementById('sliderManualAmp').addEventListener('input', (e) => {
+      state.manualAmp = parseInt(e.target.value);
+      document.getElementById('dispManualAmp').innerText = `${state.manualAmp}A`;
+      updateQuickChipUI();
+      calculate();
+    });
+
+    document.querySelectorAll('.amp-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        state.manualAmp = parseInt(chip.getAttribute('data-amp'));
+        document.getElementById('sliderManualAmp').value = state.manualAmp;
+        document.getElementById('dispManualAmp').innerText = `${state.manualAmp}A`;
+        updateQuickChipUI();
+        calculate();
+      });
+    });
+
+    document.getElementById('toggleWinter').addEventListener('click', () => {
+      if (state.winterMode === 'auto') {
+        state.winterMode = 'off';
+      } else if (state.winterMode === 'off') {
+        state.winterMode = 'on';
+      } else {
+        state.winterMode = 'auto';
+      }
+      updateWinterUI();
+      calculate();
+    });
+
+    document.getElementById('togglePrecon').addEventListener('click', () => {
+      state.preconMode = !state.preconMode;
+      document.getElementById('togglePrecon').classList.toggle('active', state.preconMode);
+      document.getElementById('preconSub').innerText = state.preconMode ? 'Açık' : 'Kabin Isıtma';
+      calculate();
+    });
+
+    document.getElementById('toggleNotify').addEventListener('click', async () => {
+      state.notifyActive = !state.notifyActive;
+      document.getElementById('toggleNotify').classList.toggle('active', state.notifyActive);
+
+      if (state.notifyActive) {
+        document.getElementById('notifySub').innerText = 'Alarm Aktif';
+        if ("Notification" in window) {
+          await Notification.requestPermission();
+        }
+        if (lastCalculatedPrediction.finishDate) {
+          createIcsCalendarAlarm(lastCalculatedPrediction.finishDate);
+          alert(`🔔 iOS Sistem Alarmı / Takvim Kuruldu:\n\nŞarj bitişine (${lastCalculatedPrediction.predictedFinishStr}) 15 dakika kala Apple Takvim sesli bildirim verecektir.`);
+        }
+      } else {
+        document.getElementById('notifySub').innerText = 'Alarm Kur';
+      }
+      calculate();
+    });
+
+    const modalSettings = document.getElementById('modalSettings');
+    document.getElementById('btnSettings').addEventListener('click', () => {
+      document.getElementById('selectModel').value = state.model || 'T10F';
+      document.getElementById('selectBatteryPreset').value = state.batteryPreset;
+      document.getElementById('selectProvince').value = state.province;
+      populateDistricts(state.province);
+      document.getElementById('selectDistrict').value = state.district;
+      document.getElementById('inputOBC').value = state.obcKw;
+      document.getElementById('inputCalibFactor').value = (state.calibFactor || 1.00).toFixed(2);
+      modalSettings.classList.add('open');
+    });
+
+    document.getElementById('btnCloseSettings').addEventListener('click', () => modalSettings.classList.remove('open'));
+
+    document.getElementById('btnSaveSettings').addEventListener('click', () => {
+      const oldProv = state.province;
+      state.model = document.getElementById('selectModel').value;
+      state.province = document.getElementById('selectProvince').value;
+      state.district = document.getElementById('selectDistrict').value;
+      state.batteryPreset = document.getElementById('selectBatteryPreset').value;
+      
+      const bData = BATTERY_PRESETS[state.batteryPreset];
+      state.batteryKwh = bData.kwh;
+      state.chemistry = bData.chem;
+      
+      state.obcKw = parseFloat(document.getElementById('inputOBC').value) || 11.0;
+      state.calibFactor = parseFloat(document.getElementById('inputCalibFactor').value) || 1.00;
+      
+      updateBadgeHeader();
+      modalSettings.classList.remove('open');
+
+      if (oldProv !== state.province) {
+        fetchWeatherByLocation();
+      } else {
+        calculate();
+      }
+    });
+
+    setInterval(() => {
+      if (state.isChargingActive) updateSchematicBar();
+    }, 20000);
+
+    loadState();
+    syncToCurrentTime();
+    fetchWeatherByLocation();
+  </script>
+</body>
+</html>
