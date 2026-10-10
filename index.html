@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ReadyAt</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ReadyAt">
+  <meta name="theme-color" content="#0b0f19">
+
+  <link id="dynamicAppleIcon" rel="apple-touch-icon" sizes="180x180">
+  <link id="dynamicFavicon" rel="icon" type="image/png">
+  <script>
+    (function generateAppIcon() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 180;
+      canvas.height = 180;
+      const ctx = canvas.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, 180, 180);
+      grad.addColorStop(0, '#0284c7');
+      grad.addColorStop(0.5, '#00d2ff');
+      grad.addColorStop(1, '#38bdf8');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 180, 180);
+
+      ctx.lineWidth = 12;
+      ctx.strokeStyle = '#070a12';
+      ctx.beginPath();
+      ctx.arc(90, 90, 64, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#070a12';
+      ctx.beginPath();
+      ctx.moveTo(96, 42);
+      ctx.lineTo(64, 94);
+      ctx.lineTo(92, 94);
+      ctx.lineTo(84, 138);
+      ctx.lineTo(116, 86);
+      ctx.lineTo(88, 86);
+      ctx.closePath();
+      ctx.fill();
+
+      const pngUri = canvas.toDataURL('image/png');
+      document.getElementById('dynamicAppleIcon').href = pngUri;
+      document.getElementById('dynamicFavicon').href = pngUri;
+    })();
+  </script>
+
+  <style>
+    :root {
+      /* Gün Işığında Yüksek Kontrast Sağlayan Palet */
+      --bg-base: #080c14;
+      --bg-card: #131b2e;
+      --bg-card-subtle: #1c263f;
+      --border: #2a3a5e;
+      --border-bright: #3d5386;
+      --blue: #00e5ff;
+      --blue-deep: #0284c7;
+      --blue-glow: rgba(0, 229, 255, 0.35);
+      --blue-subtle: rgba(0, 229, 255, 0.15);
+      --text-main: #ffffff;
+      --text-muted: #cbd5e1;
+      --text-dim: #94a3b8;
+      --danger: #ff5252;
+      --warning: #ffb300;
+      --success: #00e676;
+      --orange: #ff9100;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: pan-x pan-y;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      min-height: 100dvh;
+    }
+
+    /* Boşlukları daraltılmış mobil görünüm alanı */
+    .app-viewport {
+      width: 100%;
+      max-width: 440px;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 6px 12px 8px 12px;
+      gap: 5px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      padding: 1px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0284c7 0%, var(--blue) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 14px var(--blue-glow);
+      color: #070a12;
+      flex-shrink: 0;
+    }
+
+    .brand-logo svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .ac-badge {
+      font-size: 9px;
+      font-weight: 900;
+      color: #070a12;
+      background: var(--blue);
+      border-radius: 4px;
+      padding: 1px 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-text {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #fff;
+    }
+
+    .brand-pill {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .weather-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-radius: 8px;
+      padding: 4px 7px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .icon-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      color: var(--text-main);
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Üst Sekmeler */
+    .tabs-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 2px;
+      display: flex;
+      flex-shrink: 0;
+      gap: 2px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 6px 2px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card-subtle);
+      color: var(--blue);
+      border: 1px solid var(--blue);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+    }
+
+    /* Ana Gösterge Kartı */
+    .hero-card {
+      background: radial-gradient(130% 120% at 50% 0%, #1e2c4a 0%, var(--bg-card) 100%);
+      border: 1px solid var(--border-bright);
+      border-radius: 14px;
+      padding: 7px 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+    }
+
+    .hero-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      font-weight: 800;
+      margin-bottom: 1px;
+    }
+
+    .hero-primary {
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: #fff;
+      line-height: 1;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .hero-primary .accent {
+      color: var(--blue);
+      text-shadow: 0 0 18px var(--blue-glow);
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 16px;
+    }
+
+    .badge-early {
+      background: rgba(255, 179, 0, 0.2);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+    }
+
+    .badge-cv {
+      background: rgba(0, 229, 255, 0.2);
+      border: 1px solid var(--blue);
+      color: var(--blue);
+    }
+
+    .badge-precon {
+      background: rgba(255, 145, 0, 0.2);
+      border: 1px solid var(--orange);
+      color: var(--orange);
+    }
+
+    .hero-sub {
+      font-size: 10.5px;
+      color: #fff;
+      font-weight: 600;
+      margin-top: 2px;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .hero-stats {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      padding-top: 4px;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-k {
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .stat-v {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    /* 1. ÖNCELİK: BÜYÜTÜLMÜŞ BATARYA KARTI */
+    .card-battery-focus {
+      background: linear-gradient(180deg, #18233c 0%, var(--bg-card) 100%);
+      border: 1.5px solid var(--blue);
+      border-radius: 14px;
+      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.15);
+      flex-shrink: 0;
+    }
+
+    .battery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .battery-header-title {
+      font-size: 10.5px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .battery-delta-tag {
+      font-size: 12px;
+      font-weight: 900;
+      color: #070a12;
+      background: var(--blue);
+      border-radius: 6px;
+      padding: 2px 7px;
+    }
+
+    .range-group-lg {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .range-labels-lg {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .range-val-lg {
+      color: var(--blue);
+      font-weight: 900;
+      font-size: 15px;
+      text-shadow: 0 0 8px var(--blue-glow);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 7px;
+      border-radius: 6px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-bright);
+      outline: none;
+      touch-action: pan-x;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 10px var(--blue-glow);
+      cursor: pointer;
+      border: 2px solid #fff;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-radius: 12px;
+      padding: 7px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .time-box {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-bright);
+      border-radius: 9px;
+      padding: 4px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .time-box-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .time-box-label {
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .mini-pill-now {
+      font-size: 8px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--blue);
+      color: #070a12;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .time-input {
+      background: transparent;
+      border: none;
+      color: var(--blue);
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .recommend-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .recommend-pill {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-bright);
+      border-radius: 9px;
+      padding: 5px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .recommend-pill.active-rec {
+      border-color: var(--blue);
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.2) 0%, var(--bg-card-subtle) 100%);
+    }
+
+    .rec-tag {
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .rec-amp {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--blue);
+      line-height: 1.1;
+    }
+
+    .rec-detail {
+      font-size: 9px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .rec-early-note {
+      font-size: 8px;
+      font-weight: 800;
+      color: var(--warning);
+    }
+
+    /* Termal Sürüş Seçici */
+    .trip-selector-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-radius: 11px;
+      padding: 6px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .trip-chips-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .trip-chip {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-bright);
+      color: var(--text-muted);
+      border-radius: 7px;
+      padding: 5px 2px;
+      font-size: 9px;
+      font-weight: 800;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .trip-chip.active {
+      border-color: var(--blue);
+      color: #070a12;
+      background: var(--blue);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+
+    /* BÜYÜK MERKEZİ ŞARJI BAŞLAT BUTONU */
+    .btn-start-charging {
+      width: 100%;
+      background: linear-gradient(135deg, #0284c7 0%, var(--blue) 100%);
+      color: #070a12;
+      border: 1.5px solid #fff;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 0 18px var(--blue-glow);
+      flex-shrink: 0;
+    }
+
+    .btn-start-charging.active-session {
+      background: linear-gradient(135deg, #059669 0%, var(--success) 100%);
+      color: #070a12;
+      border-color: #fff;
+      box-shadow: 0 0 18px rgba(0, 230, 118, 0.4);
+    }
+
+    /* 4'LÜ ALT KONTROL IZGARASI */
+    .bottom-pills-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .ctrl-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-radius: 10px;
+      padding: 6px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1px;
+      cursor: pointer;
+    }
+
+    .ctrl-pill.active {
+      border-color: var(--blue);
+      background: var(--blue-subtle);
+    }
+
+    .ctrl-pill-icon {
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .ctrl-pill-title {
+      font-size: 9px;
+      font-weight: 800;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .ctrl-pill.active .ctrl-pill-title {
+      color: var(--blue);
+    }
+
+    .ctrl-pill-sub {
+      font-size: 7.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .phase-selector-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+
+    .phase-btn {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-bright);
+      color: var(--text-muted);
+      padding: 5px 8px;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .phase-btn.active {
+      border-color: var(--blue);
+      color: #070a12;
+      background: var(--blue);
+    }
+
+    .amp-quick-chips {
+      display: flex;
+      gap: 4px;
+      justify-content: space-between;
+    }
+
+    .amp-chip {
+      flex: 1;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-bright);
+      color: var(--text-muted);
+      border-radius: 7px;
+      padding: 4px 2px;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .amp-chip.active {
+      border-color: var(--blue);
+      color: #070a12;
+      background: var(--blue);
+    }
+
+    .legal-footer {
+      text-align: center;
+      padding: 2px 4px;
+      font-size: 7.5px;
+      color: var(--text-dim);
+      line-height: 1.25;
+      flex-shrink: 0;
+    }
+
+    /* Modal Stilleri */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-card);
+      border-radius: 18px 18px 0 0;
+      border-top: 1.5px solid var(--border-bright);
+      padding: 14px 14px calc(14px + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: slideUp 0.2s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .form-select, .form-input {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-bright);
+      border-radius: 8px;
+      padding: 7px 9px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .btn-action {
+      background: var(--blue);
+      color: #070a12;
+      border: none;
+      border-radius: 9px;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .info-callout {
+      background: var(--blue-subtle);
+      border: 1px solid var(--blue);
+      border-radius: 8px;
+      padding: 7px 9px;
+      font-size: 10px;
+      color: #fff;
+      line-height: 1.35;
+    }
+
+    .session-info-box {
+      background: var(--bg-card-subtle);
+      border: 1.5px solid var(--border-bright);
+      border-radius: 10px;
+      padding: 9px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .session-info-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .session-info-k {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .session-info-v {
+      font-size: 12.5px;
+      font-weight: 900;
+      color: var(--blue);
+    }
+
+    .log-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .log-btn {
+      background: var(--bg-card-subtle);
+      border: 1.5px solid var(--border-bright);
+      border-radius: 9px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .log-btn.ok {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .log-btn.early {
+      border-color: var(--warning);
+      color: var(--warning);
+    }
+
+    .log-btn.miss {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.8" opacity="0.9" />
+            <path d="M12 4.5V6.5" stroke="currentColor" stroke-width="1.8" />
+            <path d="M19.5 12H17.5" stroke="currentColor" stroke-width="1.8" />
+            <path d="M12.8 6.8L8.8 12.4H12.2L11.2 17.2L15.2 11.6H11.8L12.8 6.8Z" fill="currentColor" stroke="none" />
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <div class="brand-text">
+            <span>ReadyAt</span>
+            <span class="ac-badge">AC</span>
+          </div>
+          <span class="brand-pill" id="badgeBatteryInfo">T10F / T10X &bull; LFP 89.6 kWh</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="weather-pill" id="weatherDisplay">
+          <span id="weatherIcon">🌡️</span>
+          <span id="weatherText">--°C</span>
+        </div>
+        <button class="icon-btn" id="btnSettings" title="Ayarlar &amp; Şehir Seçimi">
+          <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2 ANA SEÇENEK SEKMESİ -->
+    <div class="tabs-wrapper">
+      <button class="tab-btn active" id="tabTargetTime">Hedef Saat &rarr; Amper</button>
+      <button class="tab-btn" id="tabFixedAmp">Sabit Amper &rarr; Saat</button>
+    </div>
+
+    <!-- HEDEF SAAT VE SABİT AMPER GÖSTERGESİ -->
+    <div class="hero-card">
+      <div class="hero-label" id="heroLabel">ÖNERİLEN TRİFAZE AKIM</div>
+      <div class="hero-primary">
+        <span class="accent" id="heroMainValue">--</span>
+      </div>
+
+      <div class="badge-row">
+        <div id="heroEarlyBadge" class="status-badge badge-early" style="display: none;">
+          <span>⚡ 6A Sınırı &bull; Erken Biter:</span>
+          <strong id="heroEarlyTime">--:--</strong>
+        </div>
+        <div id="heroPreconBadge" class="status-badge badge-precon" style="display: none;">
+          <span>🌡️ İklimlendirme (+1.3 kWh)</span>
+        </div>
+        <div id="heroCvBadge" class="status-badge badge-cv" style="display: none;">
+          <span id="heroCvBadgeText">🔋 Dengeleme / CV</span>
+        </div>
+      </div>
+
+      <div class="hero-sub" id="heroSubDesc">Hesaplanıyor...</div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-k">ENERJİ</span>
+          <span class="stat-v" id="statEnergy">-- kWh</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-k">GÜÇ</span>
+          <span class="stat-v" id="statPower">-- kW</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-k">NET VERİM</span>
+          <span class="stat-v" id="statEff">%--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. BÜYÜTÜLMÜŞ BATARYA ORANI KARTI (EN ÖNEMLİ BÖLÜM) -->
+    <div class="card-battery-focus">
+      <div class="battery-header">
+        <span class="battery-header-title">
+          <span>🔋 Batarya Oranı Planı</span>
+        </span>
+        <span class="battery-delta-tag" id="socDeltaTag">+60% Dolum</span>
+      </div>
+
+      <div class="range-group-lg">
+        <div class="range-labels-lg">
+          <span style="color: var(--text-muted);">Mevcut Şarj</span>
+          <span class="range-val-lg" id="dispCurrentSoc">%20</span>
+        </div>
+        <input type="range" id="sliderCurrentSoc" min="1" max="99" value="20">
+      </div>
+
+      <div class="range-group-lg">
+        <div class="range-labels-lg">
+          <span style="color: var(--text-muted);">Hedef Şarj</span>
+          <span class="range-val-lg" id="dispTargetSoc">%80</span>
+        </div>
+        <input type="range" id="sliderTargetSoc" min="2" max="100" value="80">
+      </div>
+    </div>
+
+    <!-- 2. TERMAL GEÇMİŞ SEÇİCİ (VARSAYILAN: YATTI / <7 KM) -->
+    <div class="trip-selector-card">
+      <div class="card-top">
+        <span class="card-title">Şarj Öncesi Sürüş (Termal Kütle)</span>
+        <span style="font-size: 8.5px; font-weight: 700; color: var(--blue);" id="tripStatusLabel">Soğuk Batarya</span>
+      </div>
+      <div class="trip-chips-grid">
+        <div class="trip-chip active" data-trip="cold">❄️ Yattı / &lt;7 km</div>
+        <div class="trip-chip" data-trip="mild">🚗 Şehir İçi (7-20km)</div>
+        <div class="trip-chip" data-trip="warm">🛣️ Uzun Yol (&gt;20km)</div>
+      </div>
+    </div>
+
+    <!-- PANEL 1: Hedef Saat Paneli -->
+    <div id="panelTargetTime" class="card">
+      <div class="card-top">
+        <span class="card-title">Zaman Planı</span>
+        <span style="font-size: 10.5px; font-weight: 800; color: var(--blue);" id="chargingWindowTag">--</span>
+      </div>
+
+      <div class="time-grid">
+        <div class="time-box">
+          <div class="time-box-top">
+            <span class="time-box-label">Başlat</span>
+            <span class="mini-pill-now" id="btnSetNow">Şimdi</span>
+          </div>
+          <input type="time" id="inputStartTime" class="time-input">
+        </div>
+
+        <div class="time-box">
+          <div class="time-box-top">
+            <span class="time-box-label">Arabaya Biniş</span>
+            <span style="font-size: 8px; color: var(--text-muted); font-weight: 700;">Hedef</span>
+          </div>
+          <input type="time" id="inputTargetTime" class="time-input" value="07:30">
+        </div>
+      </div>
+
+      <div class="recommend-row">
+        <div class="recommend-pill active-rec" id="recTriCard">
+          <span class="rec-tag">Trifaze (3-Faz)</span>
+          <span class="rec-amp" id="recTriAmp">-- A</span>
+          <span class="rec-detail" id="recTriDetail">Hesaplanıyor</span>
+          <span class="rec-early-note" id="recTriEarly" style="display: none;"></span>
+        </div>
+        <div class="recommend-pill" id="recMonoCard">
+          <span class="rec-tag">Monofaze (1-Faz)</span>
+          <span class="rec-amp" id="recMonoAmp">-- A</span>
+          <span class="rec-detail" id="recMonoDetail">Hesaplanıyor</span>
+          <span class="rec-early-note" id="recMonoEarly" style="display: none;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: Sabit Amper Paneli -->
+    <div id="panelFixedAmp" class="card" style="display: none;">
+      <div class="card-top">
+        <span class="card-title">Şarj Gücü &amp; Amper Ayarı</span>
+        <span style="font-size: 10.5px; font-weight: 800; color: var(--blue);" id="fixedPowerTag">11.0 kW</span>
+      </div>
+
+      <div class="time-box" style="margin-bottom: 2px;">
+        <div class="time-box-top">
+          <span class="time-box-label">Şarj Başlatma Saati</span>
+          <span class="mini-pill-now" id="btnSetNow2">Şimdi</span>
+        </div>
+        <input type="time" id="inputStartTime2" class="time-input">
+      </div>
+
+      <div class="phase-selector-bar">
+        <button class="phase-btn active" id="btnPhase3">Trifaze (3-Faz)</button>
+        <button class="phase-btn" id="btnPhase1">Monofaze (1-Faz)</button>
+      </div>
+
+      <div class="range-group-lg" style="margin-top: 2px;">
+        <div class="range-labels-lg">
+          <span style="color: var(--text-muted); font-size: 11px;">Akım Limiti</span>
+          <span class="range-val-lg" id="dispManualAmp" style="font-size: 13px;">16A</span>
+        </div>
+        <input type="range" id="sliderManualAmp" min="6" max="32" value="16">
+      </div>
+
+      <div class="amp-quick-chips">
+        <div class="amp-chip" data-amp="8">8A</div>
+        <div class="amp-chip" data-amp="10">10A</div>
+        <div class="amp-chip" data-amp="13">13A</div>
+        <div class="amp-chip active" data-amp="16">16A</div>
+        <div class="amp-chip" data-amp="32">32A</div>
+      </div>
+    </div>
+
+    <!-- 4. MERKEZİ BÜYÜK "ŞARJI BAŞLAT" BUTONU -->
+    <button class="btn-start-charging" id="btnStartCharging">
+      <span id="btnStartChargingIcon">⚡</span>
+      <span id="btnStartChargingText">ŞARJI BAŞLAT</span>
+    </button>
+
+    <!-- 3. ALT KONTROL PANELİ (KIŞ, İKLİMLENDİRME, BİLDİRİM, ŞARJIM BİTTİ/LOG) -->
+    <div class="bottom-pills-4">
+      <div class="ctrl-pill" id="toggleWinter">
+        <span class="ctrl-pill-icon" id="winterIcon">❄️</span>
+        <span class="ctrl-pill-title" id="winterTitle">Kış Modu</span>
+        <span class="ctrl-pill-sub" id="winterSub">Hava Bağlı</span>
+      </div>
+
+      <div class="ctrl-pill" id="togglePrecon">
+        <span class="ctrl-pill-icon">🌡️</span>
+        <span class="ctrl-pill-title">İklimlendirme</span>
+        <span class="ctrl-pill-sub" id="preconSub">Kabin Isıtma</span>
+      </div>
+
+      <div class="ctrl-pill" id="toggleNotify">
+        <span class="ctrl-pill-icon">🔔</span>
+        <span class="ctrl-pill-title">Bildirim</span>
+        <span class="ctrl-pill-sub" id="notifySub">Alarm Kur</span>
+      </div>
+
+      <!-- 3. MADDENİN LOG SEKMESİ -->
+      <div class="ctrl-pill" id="btnOpenLogModal">
+        <span class="ctrl-pill-icon">📝</span>
+        <span class="ctrl-pill-title" style="color: var(--blue);">Şarjım Bitti</span>
+        <span class="ctrl-pill-sub" id="logSubStatus">Log Gir</span>
+      </div>
+    </div>
+
+    <div class="legal-footer">
+      Togg T10X &amp; T10F modelleri ile tam uyumlu bağımsız şarj asistanıdır.<br>
+      Togg (Türkiye'nin Otomobili Girişim Grubu A.Ş.) ile resmi veya ticari bir bağı bulunmamaktadır.
+    </div>
+  </div>
+
+  <!-- 3. ŞARJIM BİTTİ / LOG GİRİŞ MODALI (ÖNCEKİ BİLGİLERLE BİRLİKTE) -->
+  <div class="modal-backdrop" id="modalLog">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 style="font-size: 14.5px; font-weight: 800; color: #fff;">Şarj Seansı Doğrulama</h3>
+        <button class="icon-btn" id="btnCloseLog">✕</button>
+      </div>
+
+      <p style="font-size: 10.5px; color: var(--text-muted); line-height: 1.35;">
+        Park işgal cezası yememek ve ev/istasyon voltaj kayıplarını öğrenmek için gerçekleşen durumu seçin:
+      </p>
+
+      <!-- KULLANICIYA İLK BAŞLANGIÇ VE UYGULAMANIN SÖYLEDİĞİ TAHMİNİ SÜREYİ GÖSTEREN KUTU -->
+      <div class="session-info-box">
+        <div class="session-info-item">
+          <span class="session-info-k">Başlangıç Şarjı</span>
+          <span class="session-info-v" id="logSnapStartSoc">%--</span>
+        </div>
+        <div class="session-info-item">
+          <span class="session-info-k">Hedef Şarj</span>
+          <span class="session-info-v" id="logSnapTargetSoc">%--</span>
+        </div>
+        <div class="session-info-item">
+          <span class="session-info-k">Başlatılan Saat</span>
+          <span class="session-info-v" id="logSnapStartTime">--:--</span>
+        </div>
+        <div class="session-info-item">
+          <span class="session-info-k">Öngörülen Bitiş</span>
+          <span class="session-info-v" id="logSnapPredictedFinish" style="color: var(--warning);">--:--</span>
+        </div>
+      </div>
+
+      <div class="log-btn-group">
+        <button class="log-btn ok" id="btnLogOk">
+          <span>✅ Tam Zamanında Bitti</span>
+          <span style="font-size: 10px; opacity: 0.85;">Sapma Yok</span>
+        </button>
+        <button class="log-btn early" id="btnLogEarly">
+          <span>⚡ Erken Bitti (İşgal Riski)</span>
+          <span style="font-size: 10px; opacity: 0.85;">Akımı Kıs</span>
+        </button>
+        <button class="log-btn miss" id="btnLogMissing">
+          <span>⚠️ Şarj Yetişmedi</span>
+          <span style="font-size: 10px; opacity: 0.85;">Eksik Kaldı</span>
+        </button>
+      </div>
+
+      <div class="info-callout">
+        💡 <strong>Park Cezası Koruması:</strong> "Erken Bitti" seçtiğinizde sistem bir sonraki sefere akımı 1 Amper kısarak şarjın tam ayrılış saatinize yayılmasını sağlar.
+      </div>
+    </div>
+  </div>
+
+  <!-- AYARLAR MODALI -->
+  <div class="modal-backdrop" id="modalSettings">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 style="font-size: 14px; font-weight: 800; color: #fff;">Yapılandırma &amp; Şehir Seçimi</h3>
+        <button class="icon-btn" id="btnCloseSettings">✕</button>
+      </div>
+
+      <div class="info-callout">
+        🌤️ <strong>Hava Durumu Bildirimi:</strong> İsabetli tahmin yapılabilmesi için konum izni istenmeden seçtiğiniz şehir/ilçenin canlı hava durumu hesaba katılmaktadır.
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Şehir &amp; İlçe (Hava Durumu İçin)</label>
+        <select id="selectCityPreset" class="form-select">
+          <option value="eskisehir_odunpazari">Eskişehir (Odunpazarı / Tepebaşı)</option>
+          <option value="ankara_cankaya">Ankara (Çankaya)</option>
+          <option value="istanbul_kadikoy">İstanbul (Kadıköy)</option>
+          <option value="bursa_nilufer">Bursa (Nilüfer)</option>
+          <option value="izmir_karsiyaka">İzmir (Karşıyaka)</option>
+          <option value="antalya_muratpasa">Antalya (Muratpaşa)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Togg Modeli &amp; Batarya Paketi</label>
+        <select id="selectBatteryPreset" class="form-select">
+          <option value="togg_lfp_long">Togg T10F / T10X V2 Uzun Menzil (LFP • 89.6 kWh)</option>
+          <option value="togg_nmc_long">Togg T10F / T10X V2 Uzun Menzil (NMC • 88.5 kWh)</option>
+          <option value="togg_lfp_std">Togg T10F / T10X V1 Standart (LFP • 52.4 kWh)</option>
+          <option value="togg_nmc_std">Togg T10F / T10X V1 Standart (NMC • 52.4 kWh)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Dahili AC Şarj Sınırı / OBC (kW)</label>
+        <input type="number" id="inputOBC" class="form-input" step="1" value="11">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Şebeke / İstasyon Hız Katsayısı</label>
+        <input type="number" id="inputCalibFactor" class="form-input" step="0.01" min="0.75" max="1.25" value="1.00">
+      </div>
+
+      <button class="btn-action" id="btnSaveSettings">Kaydet</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'readyat_settings_v15';
+
+    const CITY_COORDS = {
+      eskisehir_odunpazari: { lat: 39.7767, lon: 30.5206, name: 'Eskişehir' },
+      ankara_cankaya:       { lat: 39.9208, lon: 32.8541, name: 'Ankara' },
+      istanbul_kadikoy:     { lat: 40.9819, lon: 29.0576, name: 'İstanbul' },
+      bursa_nilufer:        { lat: 40.2155, lon: 28.9784, name: 'Bursa' },
+      izmir_karsiyaka:      { lat: 38.4559, lon: 27.1105, name: 'İzmir' },
+      antalya_muratpasa:    { lat: 36.8841, lon: 30.7056, name: 'Antalya' }
+    };
+
+    const PRESETS = {
+      togg_lfp_long: { kwh: 89.6, chem: 'LFP', label: 'T10F/T10X • LFP 89.6 kWh' },
+      togg_nmc_long: { kwh: 88.5, chem: 'NMC', label: 'T10F/T10X • NMC 88.5 kWh' },
+      togg_lfp_std:  { kwh: 52.4, chem: 'LFP', label: 'T10F/T10X • LFP 52.4 kWh' },
+      togg_nmc_std:  { kwh: 52.4, chem: 'NMC', label: 'T10F/T10X • NMC 52.4 kWh' }
+    };
+
+    let state = {
+      cityPreset: 'eskisehir_odunpazari',
+      batteryPreset: 'togg_lfp_long',
+      batteryKwh: 89.6,
+      chemistry: 'LFP',
+      obcKw: 11.0,
+      calibFactor: 1.00,
+      tripProfile: 'cold', // 2. MADDE: Varsayılan olarak "Yattı / <7 km"
+      winterForced: false,
+      preconMode: false,
+      notifyActive: false,
+      tab: 'targetTime',
+      currentSoc: 20,
+      targetSoc: 80,
+      manualPhase: 3,
+      manualAmp: 16,
+      startTime: '',
+      targetTime: '07:30',
+      isChargingActive: false,
+      activeSession: null
+    };
+
+    let currentAmbientTemp = 18;
+
+    function getNowTimeString() {
+      const d = new Date();
+      return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    }
+
+    function syncToCurrentTime() {
+      const nowStr = getNowTimeString();
+      state.startTime = nowStr;
+      const el1 = document.getElementById('inputStartTime');
+      const el2 = document.getElementById('inputStartTime2');
+      if (el1) el1.value = nowStr;
+      if (el2) el2.value = nowStr;
+      calculate();
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) syncToCurrentTime();
+    });
+    window.addEventListener('pageshow', () => syncToCurrentTime());
+    window.addEventListener('focus', () => syncToCurrentTime());
+
+    function updateBadgeHeader() {
+      const badge = document.getElementById('badgeBatteryInfo');
+      badge.innerText = PRESETS[state.batteryPreset]?.label || `${state.batteryKwh} kWh`;
+    }
+
+    async function fetchWeatherByCity() {
+      const city = CITY_COORDS[state.cityPreset] || CITY_COORDS.eskisehir_odunpazari;
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.current) {
+          currentAmbientTemp = Math.round(data.current.temperature_2m);
+          document.getElementById('weatherText').innerText = `${currentAmbientTemp}°C ${city.name}`;
+          document.getElementById('weatherIcon').innerText = currentAmbientTemp <= 5 ? '❄️' : '🌤️';
+          updateWinterUI();
+          calculate();
+        }
+      } catch(e) {
+        document.getElementById('weatherText').innerText = `${city.name}`;
+      }
+    }
+
+    function updateWinterUI() {
+      const toggle = document.getElementById('toggleWinter');
+      const sub = document.getElementById('winterSub');
+      const isColdWeather = currentAmbientTemp <= 5;
+
+      if (state.winterForced || isColdWeather) {
+        toggle.classList.add('active');
+        sub.innerText = `${currentAmbientTemp}°C (Aktif)`;
+      } else {
+        toggle.classList.remove('active');
+        sub.innerText = `${currentAmbientTemp}°C (Ilıman)`;
+      }
+    }
+
+    // Togg PTC Rezistans Termal Modeli (COP = 1.0)
+    function getDynamicEfficiency(rawKw) {
+      let baseEff = 0.93;
+      if (rawKw <= 2.5) baseEff = 0.83;
+      else if (rawKw <= 3.7) baseEff = 0.87;
+      else if (rawKw <= 7.4) baseEff = 0.90;
+
+      // Hava 16°C veya üzeriyse gereksiz kış kaybı uygulanmaz
+      if (currentAmbientTemp >= 16) {
+        return baseEff;
+      }
+
+      let estBatTemp = currentAmbientTemp;
+      if (state.tripProfile === 'mild') {
+        estBatTemp = Math.min(13, currentAmbientTemp + 8);
+      } else if (state.tripProfile === 'warm') {
+        estBatTemp = 18;
+      }
+
+      if (estBatTemp < 14) {
+        const deltaT = 14 - estBatTemp;
+        const ptcHeaterKw = (state.chemistry === 'LFP' ? 0.09 : 0.06) * deltaT;
+        const ptcPenalty = ptcHeaterKw / rawKw;
+        baseEff -= Math.min(0.40, ptcPenalty);
+      }
+
+      return Math.max(0.50, baseEff);
+    }
+
+    function parseTimeAsDate(timeStr, baseDate = new Date()) {
+      const [h, m] = timeStr.split(':').map(Number);
+      const d = new Date(baseDate);
+      d.setHours(h, m, 0, 0);
+      return d;
+    }
+
+    function formatHHMM(date) {
+      return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+    }
+
+    function calculateChargingMinutes(startSoc, endSoc, gridKw) {
+      if (startSoc >= endSoc) return { totalMinutes: 0, avgKw: gridKw, avgEff: 0.92 };
+
+      const calib = state.calibFactor || 1.0;
+      const effectiveGridKw = gridKw * calib;
+
+      let segments = [];
+      if (state.chemistry === 'LFP') {
+        segments = [
+          { from: 0, to: 98, bmsMaxKw: 99.0, floorMins: 0 },
+          { from: 98, to: 100, bmsMaxKw: 2.0, floorMins: 38 }
+        ];
+      } else {
+        segments = [
+          { from: 0, to: 90, bmsMaxKw: 99.0, floorMins: 0 },
+          { from: 90, to: 95, bmsMaxKw: 7.5, floorMins: 35 },
+          { from: 95, to: 98, bmsMaxKw: 4.5, floorMins: 30 },
+          { from: 98, to: 100, bmsMaxKw: 1.5, floorMins: 35 }
+        ];
+      }
+
+      let totalMinutes = 0;
+      let totalEnergyDelivered = 0;
+      let weightedEffSum = 0;
+
+      for (const seg of segments) {
+        const sFrom = Math.max(startSoc, seg.from);
+        const sTo = Math.min(endSoc, seg.to);
+
+        if (sTo > sFrom) {
+          const deltaPct = sTo - sFrom;
+          const segKwh = (deltaPct / 100) * state.batteryKwh;
+          const cappedKw = Math.min(effectiveGridKw, state.obcKw, seg.bmsMaxKw);
+          const eff = getDynamicEfficiency(cappedKw);
+          const netKw = cappedKw * eff;
+
+          let segMins = (segKwh / netKw) * 60;
+          if (seg.floorMins > 0) {
+            const segRatio = deltaPct / (seg.to - seg.from);
+            const naturalFloor = seg.floorMins * segRatio;
+            if (segMins < naturalFloor) segMins = naturalFloor;
+          }
+
+          totalMinutes += segMins;
+          totalEnergyDelivered += segKwh;
+          weightedEffSum += eff * segKwh;
+        }
+      }
+
+      const avgEff = totalEnergyDelivered > 0 ? (weightedEffSum / totalEnergyDelivered) : 0.92;
+      const totalHours = totalMinutes / 60;
+      const avgKw = totalHours > 0 ? (totalEnergyDelivered / (totalHours * avgEff)) : gridKw;
+
+      return { totalMinutes, avgKw, avgEff };
+    }
+
+    let lastCalculatedPrediction = { predictedFinishStr: '--:--' };
+
+    function calculate() {
+      state.currentSoc = parseInt(document.getElementById('sliderCurrentSoc').value);
+      state.targetSoc = parseInt(document.getElementById('sliderTargetSoc').value);
+      if (state.currentSoc >= state.targetSoc) {
+        state.targetSoc = Math.min(100, state.currentSoc + 1);
+        document.getElementById('sliderTargetSoc').value = state.targetSoc;
+      }
+
+      document.getElementById('dispCurrentSoc').innerText = `%${state.currentSoc}`;
+      document.getElementById('dispTargetSoc').innerText = `%${state.targetSoc}`;
+      const deltaSoc = state.targetSoc - state.currentSoc;
+      document.getElementById('socDeltaTag').innerText = `+${deltaSoc}% Dolum`;
+
+      const preconEnergyKwh = state.preconMode ? 1.3 : 0.0;
+      const neededBatteryKwh = (deltaSoc / 100) * state.batteryKwh;
+      const totalNeededKwh = neededBatteryKwh + preconEnergyKwh;
+
+      document.getElementById('statEnergy').innerText = state.preconMode 
+        ? `${totalNeededKwh.toFixed(1)} kWh (+1.3)` 
+        : `${totalNeededKwh.toFixed(1)} kWh`;
+
+      const now = new Date();
+      const heroCvBadge = document.getElementById('heroCvBadge');
+      const heroCvBadgeText = document.getElementById('heroCvBadgeText');
+      const heroEarlyBadge = document.getElementById('heroEarlyBadge');
+      const heroEarlyTime = document.getElementById('heroEarlyTime');
+      const heroPreconBadge = document.getElementById('heroPreconBadge');
+
+      heroPreconBadge.style.display = state.preconMode ? 'inline-flex' : 'none';
+
+      if (state.chemistry === 'LFP' && state.targetSoc > 98) {
+        heroCvBadge.style.display = 'inline-flex';
+        heroCvBadgeText.innerText = '🔋 LFP Hücre Dengeleme';
+      } else if (state.chemistry === 'NMC' && state.targetSoc > 90) {
+        heroCvBadge.style.display = 'inline-flex';
+        heroCvBadgeText.innerText = '🔋 NMC CV Kısması';
+      } else {
+        heroCvBadge.style.display = 'none';
+      }
+
+      if (state.tab === 'targetTime') {
+        document.getElementById('heroLabel').innerText = 'ÖNERİLEN TRİFAZE AKIM';
+
+        let startDate = parseTimeAsDate(state.startTime, now);
+        if (startDate.getTime() < now.getTime() - 30 * 60000) {
+          startDate.setDate(startDate.getDate() + 1);
+        }
+
+        let targetDate = parseTimeAsDate(state.targetTime, startDate);
+        if (targetDate.getTime() <= startDate.getTime()) {
+          targetDate.setDate(targetDate.getDate() + 1);
+        }
+
+        const totalMinutesRaw = Math.max(1, Math.round((targetDate.getTime() - startDate.getTime()) / 60000));
+        const preconBufferMins = state.preconMode ? 15 : 0;
+        const availableChargingMins = Math.max(1, totalMinutesRaw - preconBufferMins);
+
+        const wH = Math.floor(totalMinutesRaw / 60);
+        const wM = totalMinutesRaw % 60;
+        document.getElementById('chargingWindowTag').innerText = `${wH} sa ${wM} dk süre`;
+
+        function solveAmps(phase) {
+          let exactAmp = null;
+          for (let a = 6; a <= 32; a++) {
+            const rawKw = (phase * 230 * a) / 1000;
+            const cappedNominalKw = Math.min(rawKw, state.obcKw);
+            const res = calculateChargingMinutes(state.currentSoc, state.targetSoc, rawKw);
+
+            if (res.totalMinutes <= availableChargingMins) {
+              exactAmp = {
+                amp: a,
+                nominalKw: cappedNominalKw,
+                avgKw: res.avgKw,
+                eff: res.avgEff,
+                minsNeeded: res.totalMinutes,
+                early: false
+              };
+              break;
+            }
+          }
+
+          if (exactAmp) {
+            if (exactAmp.amp === 6) {
+              const rawKw = (phase * 230 * 6) / 1000;
+              const res6 = calculateChargingMinutes(state.currentSoc, state.targetSoc, rawKw);
+
+              if (res6.totalMinutes < (availableChargingMins - 10)) {
+                const actualFinishDate = new Date(startDate.getTime() + res6.totalMinutes * 60000);
+                return {
+                  possible: true,
+                  amp: 6,
+                  nominalKw: Math.min(rawKw, state.obcKw),
+                  avgKw: res6.avgKw,
+                  eff: res6.avgEff,
+                  early: true,
+                  finishDate: actualFinishDate,
+                  finishTimeStr: formatHHMM(actualFinishDate)
+                };
+              }
+            }
+            return { possible: true, ...exactAmp, finishDate: targetDate, finishTimeStr: formatHHMM(targetDate) };
+          }
+          return { possible: false };
+        }
+
+        const tri = solveAmps(3);
+        const mono = solveAmps(1);
+
+        if (tri.possible) {
+          document.getElementById('heroMainValue').innerText = `${tri.amp}A`;
+          document.getElementById('recTriAmp').innerText = `${tri.amp}A`;
+          document.getElementById('recTriDetail').innerText = `${tri.nominalKw.toFixed(1)} kW (Trifaze)`;
+          document.getElementById('statPower').innerText = `${tri.nominalKw.toFixed(1)} kW`;
+          document.getElementById('statEff').innerText = `%${Math.round(tri.eff * 100)}`;
+          document.getElementById('recTriCard').classList.add('active-rec');
+
+          lastCalculatedPrediction.predictedFinishStr = tri.early ? tri.finishTimeStr : formatHHMM(targetDate);
+
+          if (tri.early) {
+            heroEarlyBadge.style.display = 'inline-flex';
+            heroEarlyTime.innerText = tri.finishTimeStr;
+            document.getElementById('heroSubDesc').innerText = `6A taban akım nedeniyle şarj ${formatHHMM(targetDate)} yerine daha erken tamamlanır.`;
+            document.getElementById('recTriEarly').style.display = 'block';
+            document.getElementById('recTriEarly').innerText = `⚡ Bitiş: ${tri.finishTimeStr}`;
+          } else {
+            heroEarlyBadge.style.display = 'none';
+            document.getElementById('recTriEarly').style.display = 'none';
+            let desc = `Trifaze ${tri.amp}A (${tri.nominalKw.toFixed(1)} kW) ile tam ${formatHHMM(targetDate)}'da hazır.`;
+            if (state.preconMode) desc += ` (Son 15 dk kabin ısıtma devrede)`;
+            document.getElementById('heroSubDesc').innerText = desc;
+          }
+        } else {
+          heroEarlyBadge.style.display = 'none';
+          document.getElementById('heroMainValue').innerText = 'Yetmez';
+          document.getElementById('heroSubDesc').innerText = `${wH} sa ${wM} dk sürede dolum için 11 kW tavanı yetersiz.`;
+          document.getElementById('recTriAmp').innerText = 'Aşar';
+          document.getElementById('recTriDetail').innerText = '11 kW tavanı aşıldı';
+          document.getElementById('recTriEarly').style.display = 'none';
+          document.getElementById('statPower').innerText = '11.0 kW';
+          document.getElementById('statEff').innerText = '%--';
+          lastCalculatedPrediction.predictedFinishStr = '--:--';
+        }
+
+        if (mono.possible) {
+          document.getElementById('recMonoAmp').innerText = `${mono.amp}A`;
+          document.getElementById('recMonoDetail').innerText = `${mono.nominalKw.toFixed(1)} kW (Monofaze)`;
+          if (mono.early) {
+            document.getElementById('recMonoEarly').style.display = 'block';
+            document.getElementById('recMonoEarly').innerText = `⚡ Bitiş: ${mono.finishTimeStr}`;
+          } else {
+            document.getElementById('recMonoEarly').style.display = 'none';
+          }
+        } else {
+          document.getElementById('recMonoAmp').innerText = 'Yetmez';
+          document.getElementById('recMonoDetail').innerText = 'Monofaze yetersiz';
+          document.getElementById('recMonoEarly').style.display = 'none';
+        }
+
+      } else if (state.tab === 'fixedAmp') {
+        document.getElementById('heroLabel').innerText = 'ŞARJIN BİTECEĞİ SAAT';
+        heroEarlyBadge.style.display = 'none';
+
+        const rawKw = (state.manualPhase * 230 * state.manualAmp) / 1000;
+        const cappedNominalKw = Math.min(rawKw, state.obcKw);
+        document.getElementById('fixedPowerTag').innerText = `${cappedNominalKw.toFixed(1)} kW (${state.manualPhase === 3 ? 'Trifaze' : 'Monofaze'})`;
+
+        const res = calculateChargingMinutes(state.currentSoc, state.targetSoc, rawKw);
+        const preconBufferMins = state.preconMode ? 15 : 0;
+        const totalMinutes = Math.round(res.totalMinutes + preconBufferMins);
+
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+
+        let startDate = parseTimeAsDate(state.startTime, now);
+        if (startDate.getTime() < now.getTime() - 30 * 60000) {
+          startDate.setDate(startDate.getDate() + 1);
+        }
+
+        const finishDate = new Date(startDate.getTime() + totalMinutes * 60000);
+        const fH = String(finishDate.getHours()).padStart(2, '0');
+        const fM = String(finishDate.getMinutes()).padStart(2, '0');
+
+        document.getElementById('heroMainValue').innerText = `${fH}:${fM}`;
+        lastCalculatedPrediction.predictedFinishStr = `${fH}:${fM}`;
+
+        const isDiffDay = finishDate.getDate() !== startDate.getDate();
+        let desc = `${isDiffDay ? 'Ertesi gün ' : 'Bugün '}${fH}:${fM}'de hazır (${h} sa ${m} dk sürer).`;
+        if (state.preconMode) desc += ` (+15 dk kabin ısıtma dahil)`;
+        document.getElementById('heroSubDesc').innerText = desc;
+        
+        document.getElementById('statPower').innerText = `${cappedNominalKw.toFixed(1)} kW`;
+        document.getElementById('statEff').innerText = `%${Math.round(res.avgEff * 100)}`;
+      }
+      saveState();
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { Object.assign(state, JSON.parse(saved)); } catch(e){}
+      }
+      
+      state.startTime = getNowTimeString();
+
+      document.getElementById('selectCityPreset').value = state.cityPreset;
+      document.getElementById('selectBatteryPreset').value = state.batteryPreset;
+      document.getElementById('inputOBC').value = state.obcKw;
+      document.getElementById('inputCalibFactor').value = (state.calibFactor || 1.00).toFixed(2);
+      document.getElementById('sliderCurrentSoc').value = state.currentSoc;
+      document.getElementById('sliderTargetSoc').value = state.targetSoc;
+      document.getElementById('inputStartTime').value = state.startTime;
+      document.getElementById('inputStartTime2').value = state.startTime;
+      document.getElementById('inputTargetTime').value = state.targetTime;
+      document.getElementById('sliderManualAmp').value = state.manualAmp;
+      document.getElementById('dispManualAmp').innerText = `${state.manualAmp}A`;
+
+      // 2. MADDE: Varsayılan "cold" profilinin çiplere yansıtılması
+      document.querySelectorAll('.trip-chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-trip') === state.tripProfile);
+      });
+      updateTripStatusLabel();
+
+      updatePhaseUI();
+      updateQuickChipUI();
+      updateBadgeHeader();
+      updateChargingButtonUI();
+
+      if (state.preconMode) {
+        document.getElementById('togglePrecon').classList.add('active');
+        document.getElementById('preconSub').innerText = 'Açık (+1.3kWh)';
+      }
+      if (state.notifyActive) {
+        document.getElementById('toggleNotify').classList.add('active');
+        document.getElementById('notifySub').innerText = 'Alarmlar Aktif';
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function updateTripStatusLabel() {
+      const lbl = document.getElementById('tripStatusLabel');
+      if (state.tripProfile === 'cold') lbl.innerText = 'Soğuk Batarya (Isıtıcı Aktif)';
+      else if (state.tripProfile === 'mild') lbl.innerText = 'Ilık Batarya (Düşük Isıtma)';
+      else lbl.innerText = 'Sıcak Batarya (Isıtıcı Kapalı)';
+    }
+
+    function updatePhaseUI() {
+      document.getElementById('btnPhase3').classList.toggle('active', state.manualPhase === 3);
+      document.getElementById('btnPhase1').classList.toggle('active', state.manualPhase === 1);
+    }
+
+    function updateQuickChipUI() {
+      document.querySelectorAll('.amp-chip').forEach(c => {
+        c.classList.toggle('active', parseInt(c.getAttribute('data-amp')) === state.manualAmp);
+      });
+    }
+
+    // 4. MADDE: ŞARJI BAŞLAT BUTON DURUMU
+    function updateChargingButtonUI() {
+      const btn = document.getElementById('btnStartCharging');
+      const icon = document.getElementById('btnStartChargingIcon');
+      const text = document.getElementById('btnStartChargingText');
+      const logSub = document.getElementById('logSubStatus');
+
+      if (state.isChargingActive) {
+        btn.classList.add('active-session');
+        icon.innerText = '🟢';
+        text.innerText = `ŞARJ EDİLİYOR • BİTİŞ: ${state.activeSession?.predictedFinish || '--:--'}`;
+        logSub.innerText = 'Seans Aktif';
+      } else {
+        btn.classList.remove('active-session');
+        icon.innerText = '⚡';
+        text.innerText = 'ŞARJI BAŞLAT';
+        logSub.innerText = 'Log Gir';
+      }
+    }
+
+    document.getElementById('btnStartCharging').addEventListener('click', () => {
+      if (!state.isChargingActive) {
+        state.isChargingActive = true;
+        state.activeSession = {
+          startSoc: state.currentSoc,
+          targetSoc: state.targetSoc,
+          startTime: state.startTime || getNowTimeString(),
+          predictedFinish: lastCalculatedPrediction.predictedFinishStr
+        };
+        updateChargingButtonUI();
+        alert(`⚡ Şarj seansı başlatıldı!\n\n• Başlangıç: %${state.activeSession.startSoc}\n• Hedef: %${state.activeSession.targetSoc}\n• Tahmini Bitiş: ${state.activeSession.predictedFinish}\n\nŞarj bittiğinde alttaki "Şarjım Bitti" butonundan doğrulamayı yapabilirsiniz.`);
+      } else {
+        if (confirm("Mevcut şarj seansını tamamlayıp sonuçları kaydetmek istiyor musunuz?")) {
+          openLogModal();
+        }
+      }
+      saveState();
+    });
+
+    // 3. MADDE: LOG MODALINI AÇMA VE VERİLERİ YANSITMA
+    function openLogModal() {
+      const snapStartSoc = state.isChargingActive ? state.activeSession.startSoc : state.currentSoc;
+      const snapTargetSoc = state.isChargingActive ? state.activeSession.targetSoc : state.targetSoc;
+      const snapStartTime = state.isChargingActive ? state.activeSession.startTime : (state.startTime || getNowTimeString());
+      const snapPredicted = state.isChargingActive ? state.activeSession.predictedFinish : lastCalculatedPrediction.predictedFinishStr;
+
+      document.getElementById('logSnapStartSoc').innerText = `%${snapStartSoc}`;
+      document.getElementById('logSnapTargetSoc').innerText = `%${snapTargetSoc}`;
+      document.getElementById('logSnapStartTime').innerText = snapStartTime;
+      document.getElementById('logSnapPredictedFinish').innerText = snapPredicted;
+
+      document.getElementById('modalLog').classList.add('open');
+    }
+
+    document.getElementById('btnOpenLogModal').addEventListener('click', () => {
+      openLogModal();
+    });
+
+    document.getElementById('btnCloseLog').addEventListener('click', () => {
+      document.getElementById('modalLog').classList.remove('open');
+    });
+
+    // Log Aksiyonları
+    document.getElementById('btnLogOk').addEventListener('click', () => {
+      state.isChargingActive = false;
+      state.activeSession = null;
+      updateChargingButtonUI();
+      document.getElementById('modalLog').classList.remove('open');
+      saveState();
+      alert("Harika! Şarj tam vaktinde tamamlandı. Hız kalibrasyonu korundu.");
+    });
+
+    document.getElementById('btnLogEarly').addEventListener('click', () => {
+      const minsEarly = prompt("Şarj hedef saatten yaklaşık kaç dakika erken bitti? (Örnek: 25)", "20");
+      if (minsEarly) {
+        const m = parseInt(minsEarly);
+        if (!isNaN(m) && m > 0) {
+          state.calibFactor = Math.min(1.25, (state.calibFactor || 1.0) * (1 + (m / 240)));
+          document.getElementById('inputCalibFactor').value = state.calibFactor.toFixed(2);
+          state.isChargingActive = false;
+          state.activeSession = null;
+          updateChargingButtonUI();
+          document.getElementById('modalLog').classList.remove('open');
+          saveState();
+          calculate();
+          alert(`Hız katsayınız ${state.calibFactor.toFixed(2)}x olarak güncellendi.\nBir sonraki şarjda akım tam ayrılış saatinize yayılacak (işgal cezası önlendi).`);
+        }
+      }
+    });
+
+    document.getElementById('btnLogMissing').addEventListener('click', () => {
+      const userVal = prompt("Şarj yetişmediğinde batarya yüzde kaçta kaldı? (Örnek: 76)", "");
+      if (userVal) {
+        const actualSoc = parseInt(userVal);
+        const refStart = state.activeSession ? state.activeSession.startSoc : state.currentSoc;
+        const refTarget = state.activeSession ? state.activeSession.targetSoc : state.targetSoc;
+
+        if (!isNaN(actualSoc) && actualSoc < refTarget) {
+          const plannedDelta = refTarget - refStart;
+          const actualDelta = Math.max(1, actualSoc - refStart);
+          const ratio = actualDelta / plannedDelta;
+          state.calibFactor = Math.max(0.75, Math.min(1.05, (state.calibFactor || 1.0) * ratio));
+          document.getElementById('inputCalibFactor').value = state.calibFactor.toFixed(2);
+          state.isChargingActive = false;
+          state.activeSession = null;
+          updateChargingButtonUI();
+          document.getElementById('modalLog').classList.remove('open');
+          saveState();
+          calculate();
+          alert(`Şebeke hız katsayınız ${state.calibFactor.toFixed(2)}x olarak ayarlandı. Sonraki seanslarda eksiklik telafi edilecek.`);
+        }
+      }
+    });
+
+    // Sekmeler
+    const tabTargetTime = document.getElementById('tabTargetTime');
+    const tabFixedAmp = document.getElementById('tabFixedAmp');
+    const panelTargetTime = document.getElementById('panelTargetTime');
+    const panelFixedAmp = document.getElementById('panelFixedAmp');
+
+    tabTargetTime.addEventListener('click', () => {
+      state.tab = 'targetTime';
+      tabTargetTime.classList.add('active');
+      tabFixedAmp.classList.remove('active');
+      panelTargetTime.style.display = 'flex';
+      panelFixedAmp.style.display = 'none';
+      calculate();
+    });
+
+    tabFixedAmp.addEventListener('click', () => {
+      state.tab = 'fixedAmp';
+      tabFixedAmp.classList.add('active');
+      tabTargetTime.classList.remove('active');
+      panelFixedAmp.style.display = 'flex';
+      panelTargetTime.style.display = 'none';
+      calculate();
+    });
+
+    // Sürüş Çipleri
+    document.querySelectorAll('.trip-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.trip-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        state.tripProfile = chip.getAttribute('data-trip');
+        updateTripStatusLabel();
+        calculate();
+      });
+    });
+
+    document.getElementById('sliderCurrentSoc').addEventListener('input', calculate);
+    document.getElementById('sliderTargetSoc').addEventListener('input', calculate);
+
+    document.getElementById('inputStartTime').addEventListener('input', (e) => {
+      state.startTime = e.target.value;
+      document.getElementById('inputStartTime2').value = e.target.value;
+      calculate();
+    });
+
+    document.getElementById('inputStartTime2').addEventListener('input', (e) => {
+      state.startTime = e.target.value;
+      document.getElementById('inputStartTime').value = e.target.value;
+      calculate();
+    });
+
+    document.getElementById('btnSetNow').addEventListener('click', syncToCurrentTime);
+    document.getElementById('btnSetNow2').addEventListener('click', syncToCurrentTime);
+
+    document.getElementById('inputTargetTime').addEventListener('input', (e) => {
+      state.targetTime = e.target.value;
+      calculate();
+    });
+
+    document.getElementById('btnPhase3').addEventListener('click', () => {
+      state.manualPhase = 3;
+      updatePhaseUI();
+      calculate();
+    });
+
+    document.getElementById('btnPhase1').addEventListener('click', () => {
+      state.manualPhase = 1;
+      updatePhaseUI();
+      calculate();
+    });
+
+    document.getElementById('sliderManualAmp').addEventListener('input', (e) => {
+      state.manualAmp = parseInt(e.target.value);
+      document.getElementById('dispManualAmp').innerText = `${state.manualAmp}A`;
+      updateQuickChipUI();
+      calculate();
+    });
+
+    document.querySelectorAll('.amp-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        state.manualAmp = parseInt(chip.getAttribute('data-amp'));
+        document.getElementById('sliderManualAmp').value = state.manualAmp;
+        document.getElementById('dispManualAmp').innerText = `${state.manualAmp}A`;
+        updateQuickChipUI();
+        calculate();
+      });
+    });
+
+    document.getElementById('toggleWinter').addEventListener('click', () => {
+      state.winterForced = !state.winterForced;
+      updateWinterUI();
+      calculate();
+    });
+
+    document.getElementById('togglePrecon').addEventListener('click', () => {
+      state.preconMode = !state.preconMode;
+      document.getElementById('togglePrecon').classList.toggle('active', state.preconMode);
+      document.getElementById('preconSub').innerText = state.preconMode ? 'Açık (+1.3kWh)' : 'Kabin Isıtma';
+      calculate();
+    });
+
+    document.getElementById('toggleNotify').addEventListener('click', async () => {
+      state.notifyActive = !state.notifyActive;
+      document.getElementById('toggleNotify').classList.toggle('active', state.notifyActive);
+      document.getElementById('notifySub').innerText = state.notifyActive ? 'Alarmlar Aktif' : 'Alarm Kur';
+      calculate();
+    });
+
+    // Ayarlar Modal Yönetimi
+    const modalSettings = document.getElementById('modalSettings');
+    document.getElementById('btnSettings').addEventListener('click', () => {
+      document.getElementById('selectCityPreset').value = state.cityPreset;
+      document.getElementById('selectBatteryPreset').value = state.batteryPreset;
+      document.getElementById('inputOBC').value = state.obcKw;
+      document.getElementById('inputCalibFactor').value = (state.calibFactor || 1.00).toFixed(2);
+      modalSettings.classList.add('open');
+    });
+
+    document.getElementById('btnCloseSettings').addEventListener('click', () => modalSettings.classList.remove('open'));
+
+    document.getElementById('btnSaveSettings').addEventListener('click', () => {
+      const oldCity = state.cityPreset;
+      state.cityPreset = document.getElementById('selectCityPreset').value;
+      state.batteryPreset = document.getElementById('selectBatteryPreset').value;
+      state.batteryKwh = PRESETS[state.batteryPreset].kwh;
+      state.chemistry = PRESETS[state.batteryPreset].chem;
+      state.obcKw = parseFloat(document.getElementById('inputOBC').value) || 11.0;
+      state.calibFactor = parseFloat(document.getElementById('inputCalibFactor').value) || 1.00;
+      
+      updateBadgeHeader();
+      modalSettings.classList.remove('open');
+
+      if (oldCity !== state.cityPreset) {
+        fetchWeatherByCity();
+      } else {
+        calculate();
+      }
+    });
+
+    loadState();
+    syncToCurrentTime();
+    fetchWeatherByCity();
+  </script>
+</body>
+</html>
