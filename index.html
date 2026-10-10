@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ReadyAt</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ReadyAt">
+  <meta name="theme-color" content="#0d0e12">
+  <style>
+    :root {
+      --bg-base: #0d0e12;
+      --bg-card: #16181f;
+      --bg-card-subtle: #1e212b;
+      --border: #282c37;
+      --blue: #38bdf8;
+      --blue-glow: rgba(56, 189, 248, 0.25);
+      --blue-subtle: rgba(56, 189, 248, 0.12);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --success: #34d399;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+    }
+
+    /* Ekrana sabitleyen ve dikey yaylanmayı engelleyen yapı */
+    html, body {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: auto;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: pan-x pan-y;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+
+    .app-viewport {
+      width: 100%;
+      max-width: 440px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 8px 14px 10px 14px;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    /* Üst Başlık */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      padding: 2px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    /* Saat Kadranı + Merkez Şimşek Logo */
+    .brand-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, var(--blue) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 14px var(--blue-glow);
+      color: #0d0e12;
+      flex-shrink: 0;
+    }
+
+    .brand-logo svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .brand-text {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    /* Sekme Seçici */
+    .tabs-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 3px;
+      display: flex;
+      flex-shrink: 0;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 7px 4px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card-subtle);
+      color: var(--blue);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    /* Büyük Hero Kartı */
+    .hero-card {
+      background: radial-gradient(120% 120% at 50% 0%, #1c2230 0%, var(--bg-card) 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 11px 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+    }
+
+    .hero-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-dim);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .hero-primary {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #fff;
+      line-height: 1.1;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .hero-primary .accent {
+      color: var(--blue);
+      text-shadow: 0 0 16px var(--blue-glow);
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 3px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .badge-early {
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      color: var(--warning);
+    }
+
+    .badge-cv {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--blue);
+    }
+
+    .hero-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: 4px;
+      margin-bottom: 7px;
+      line-height: 1.25;
+    }
+
+    .hero-stats {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding-top: 7px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-k {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .stat-v {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Kart Genel */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dim);
+    }
+
+    /* Slider Stilleri */
+    .range-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .range-val {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 4px;
+      background: var(--bg-card-subtle);
+      outline: none;
+      touch-action: pan-x;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 8px var(--blue-glow);
+      cursor: pointer;
+      border: 2px solid #0d0e12;
+    }
+
+    /* Zaman Girişi Grid */
+    .time-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .time-box {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .time-box-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .time-box-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .mini-pill-now {
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: var(--blue-subtle);
+      color: var(--blue);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .time-input-row {
+      display: flex;
+      align-items: center;
+    }
+
+    .time-input {
+      background: transparent;
+      border: none;
+      color: var(--blue);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .time-input::-webkit-calendar-picker-indicator {
+      filter: invert(0.8) sepia(100%) saturate(300%) hue-rotate(170deg);
+      cursor: pointer;
+    }
+
+    /* Amper Tavsiye Kartları */
+    .recommend-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .recommend-pill {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .recommend-pill.active-rec {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, var(--bg-card-subtle) 100%);
+    }
+
+    .rec-tag {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .rec-amp {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--blue);
+      line-height: 1.1;
+    }
+
+    .rec-detail {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rec-early-note {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--warning);
+      margin-top: 1px;
+    }
+
+    /* Sekme 2 Preset Kartları */
+    .preset-chips {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .preset-chip {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 4px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-chip.active {
+      border-color: var(--blue);
+      background: var(--blue-subtle);
+    }
+
+    .chip-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .preset-chip.active .chip-title {
+      color: var(--blue);
+    }
+
+    .chip-sub {
+      font-size: 9px;
+      color: var(--text-dim);
+      margin-top: 1px;
+    }
+
+    /* Alt Toggle Bar */
+    .toggles-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .toggle-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-card.active {
+      border-color: rgba(56, 189, 248, 0.4);
+      background: var(--blue-subtle);
+    }
+
+    .toggle-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .toggle-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .toggle-desc {
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    .toggle-card.active .toggle-title {
+      color: var(--blue);
+    }
+
+    .switch-indicator {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .toggle-card.active .switch-indicator {
+      background: var(--blue);
+      border-color: var(--blue);
+      box-shadow: 0 0 6px var(--blue-glow);
+    }
+
+    /* Modal / Ayarlar */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-card);
+      border-radius: 20px 20px 0 0;
+      border-top: 1px solid var(--border);
+      padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: slideUp 0.2s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-input {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--blue);
+    }
+
+    .btn-action {
+      background: var(--blue);
+      color: #0d0e12;
+      border: none;
+      border-radius: 10px;
+      padding: 11px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+    <!-- Üst Başlık -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.8" opacity="0.9" />
+            <path d="M12 4.5V6.5" stroke="currentColor" stroke-width="1.8" />
+            <path d="M19.5 12H17.5" stroke="currentColor" stroke-width="1.8" />
+            <path d="M12.8 6.8L8.8 12.4H12.2L11.2 17.2L15.2 11.6H11.8L12.8 6.8Z" fill="currentColor" stroke="none" />
+          </svg>
+        </div>
+        <span class="brand-text">ReadyAt</span>
+      </div>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="btnSettings" title="Araç Ayarları">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Sekmeler -->
+    <div class="tabs-wrapper">
+      <button class="tab-btn active" id="tabTargetTime">Hedef Saat &rarr; Amper</button>
+      <button class="tab-btn" id="tabMaxSpeed">Max Hız &rarr; Saat Kaçta?</button>
+    </div>
+
+    <!-- Büyük Sonuç Hero Kartı -->
+    <div class="hero-card">
+      <div class="hero-label" id="heroLabel">ÖNERİLEN TRİFAZE AKIM</div>
+      <div class="hero-primary">
+        <span class="accent" id="heroMainValue">--</span>
+      </div>
+
+      <!-- Durum Rozetleri (6A Alt Sınırı & BMS CV Bildirimi) -->
+      <div class="badge-row">
+        <div id="heroEarlyBadge" class="status-badge badge-early" style="display: none;">
+          <span>⚡ 6A Sınırı &bull; Erken Biter:</span>
+          <strong id="heroEarlyTime">--:--</strong>
+        </div>
+        <div id="heroCvBadge" class="status-badge badge-cv" style="display: none;">
+          <span>🔋 BMS CV &amp; Dengeleme</span>
+        </div>
+      </div>
+
+      <div class="hero-sub" id="heroSubDesc">Hesaplanıyor...</div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-k">ENERJİ</span>
+          <span class="stat-v" id="statEnergy">-- kWh</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-k">ORT. GÜÇ</span>
+          <span class="stat-v" id="statPower">-- kW</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-k">VERİM</span>
+          <span class="stat-v" id="statEff">%--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Batarya Giriş Kartı -->
+    <div class="card">
+      <div class="card-top">
+        <span class="card-title">Batarya Oranı</span>
+        <span style="font-size: 11px; font-weight: 700; color: var(--blue);" id="socDeltaTag">+60% Dolum</span>
+      </div>
+
+      <div class="range-group">
+        <div class="range-labels">
+          <span style="color: var(--text-muted);">Mevcut Şarj</span>
+          <span class="range-val" id="dispCurrentSoc">%20</span>
+        </div>
+        <input type="range" id="sliderCurrentSoc" min="1" max="99" value="20">
+      </div>
+
+      <div class="range-group">
+        <div class="range-labels">
+          <span style="color: var(--text-muted);">Hedef Şarj</span>
+          <span class="range-val" id="dispTargetSoc">%80</span>
+        </div>
+        <input type="range" id="sliderTargetSoc" min="2" max="100" value="80">
+      </div>
+    </div>
+
+    <!-- PANEL 1: Hedef Saat Paneli -->
+    <div id="panelTargetTime" class="card">
+      <div class="card-top">
+        <span class="card-title">Şarj Zaman Planı</span>
+        <span style="font-size: 11px; font-weight: 700; color: var(--blue);" id="chargingWindowTag">--</span>
+      </div>
+
+      <div class="time-grid">
+        <div class="time-box">
+          <div class="time-box-top">
+            <span class="time-box-label">Şarj Başlat</span>
+            <span class="mini-pill-now" id="btnSetNow">Şimdi</span>
+          </div>
+          <div class="time-input-row">
+            <input type="time" id="inputStartTime" class="time-input">
+          </div>
+        </div>
+
+        <div class="time-box">
+          <div class="time-box-top">
+            <span class="time-box-label">Arabaya Biniş</span>
+            <span style="font-size: 9px; color: var(--text-dim); font-weight: 600;">Hedef</span>
+          </div>
+          <div class="time-input-row">
+            <input type="time" id="inputTargetTime" class="time-input" value="07:30">
+          </div>
+        </div>
+      </div>
+
+      <div class="recommend-row">
+        <div class="recommend-pill active-rec" id="recTriCard">
+          <span class="rec-tag">Trifaze (3-Faz)</span>
+          <span class="rec-amp" id="recTriAmp">-- A</span>
+          <span class="rec-detail" id="recTriDetail">Hesaplanıyor</span>
+          <span class="rec-early-note" id="recTriEarly" style="display: none;"></span>
+        </div>
+        <div class="recommend-pill" id="recMonoCard">
+          <span class="rec-tag">Monofaze (1-Faz)</span>
+          <span class="rec-amp" id="recMonoAmp">-- A</span>
+          <span class="rec-detail" id="recMonoDetail">Hesaplanıyor</span>
+          <span class="rec-early-note" id="recMonoEarly" style="display: none;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: Max Hız Paneli -->
+    <div id="panelMaxSpeed" class="card" style="display: none;">
+      <div class="card-top">
+        <span class="card-title">Maksimum Şebeke Gücü</span>
+      </div>
+
+      <div class="preset-chips">
+        <div class="preset-chip active" data-preset="tri16">
+          <div class="chip-title">11 kW</div>
+          <div class="chip-sub">Trifaze 16A</div>
+        </div>
+        <div class="preset-chip" data-preset="mono32">
+          <div class="chip-title">7.4 kW</div>
+          <div class="chip-sub">Monofaze 32A</div>
+        </div>
+        <div class="preset-chip" data-preset="mono16">
+          <div class="chip-title">3.7 kW</div>
+          <div class="chip-sub">Monofaze 16A</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alt Toggle Bar -->
+    <div class="toggles-bar">
+      <div class="toggle-card" id="toggleWinter">
+        <div class="toggle-info">
+          <span class="toggle-title">❄️ Kış Modu</span>
+          <span class="toggle-desc" id="winterDesc">&lt; 5°C Direnç / Isıtıcı</span>
+        </div>
+        <div class="switch-indicator"></div>
+      </div>
+
+      <div class="toggle-card" id="toggleNotify">
+        <div class="toggle-info">
+          <span class="toggle-title">🔔 Bildirim Gönder</span>
+          <span class="toggle-desc" id="notifyDesc">Başlangıç &amp; Bitiş</span>
+        </div>
+        <div class="switch-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AYARLAR MODAL -->
+  <div class="modal-backdrop" id="modalSettings">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3 style="font-size: 16px; font-weight: 700;">Araç Donanımı</h3>
+        <button class="icon-btn" id="btnCloseSettings">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Kullanılabilir Batarya (kWh)</label>
+        <input type="number" id="inputBattery" class="form-input" step="0.5" value="88.5">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Dahili AC Şarj Sınırı / OBC (kW)</label>
+        <input type="number" id="inputOBC" class="form-input" step="1" value="11">
+      </div>
+
+      <button class="btn-action" id="btnSaveSettings">Kaydet</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'readyat_settings_v5';
+    let state = {
+      batteryKwh: 88.5,
+      obcKw: 11.0,
+      winterMode: false,
+      notifyActive: false,
+      tab: 'targetTime',
+      currentSoc: 20,
+      targetSoc: 80,
+      maxPreset: 'tri16',
+      startTime: '',
+      targetTime: '07:30'
+    };
+
+    function getNowTimeString() {
+      const d = new Date();
+      return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          state = Object.assign(state, parsed);
+        } catch(e){}
+      }
+      
+      if (!state.startTime) {
+        state.startTime = getNowTimeString();
+      }
+
+      document.getElementById('inputBattery').value = state.batteryKwh;
+      document.getElementById('inputOBC').value = state.obcKw;
+      document.getElementById('sliderCurrentSoc').value = state.currentSoc;
+      document.getElementById('sliderTargetSoc').value = state.targetSoc;
+      document.getElementById('inputStartTime').value = state.startTime;
+      document.getElementById('inputTargetTime').value = state.targetTime;
+      
+      if (state.winterMode) document.getElementById('toggleWinter').classList.add('active');
+      if (state.notifyActive) {
+        document.getElementById('toggleNotify').classList.add('active');
+        document.getElementById('notifyDesc').innerText = 'Alarmlar aktif';
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    let startNotificationTimer = null;
+    let finishNotificationTimer = null;
+
+    function resetNotificationTimers() {
+      if (startNotificationTimer) clearTimeout(startNotificationTimer);
+      if (finishNotificationTimer) clearTimeout(finishNotificationTimer);
+      startNotificationTimer = null;
+      finishNotificationTimer = null;
+    }
+
+    function scheduleNotifications(startDate, finishDate) {
+      if (!state.notifyActive) return;
+      resetNotificationTimers();
+
+      const now = Date.now();
+      const msUntilStart = startDate.getTime() - now;
+      if (msUntilStart > 1000) {
+        startNotificationTimer = setTimeout(() => {
+          fireNotification("ReadyAt: Şarj Başlama Vakti! ⚡", "Ayarladığınız başlangıç saatine gelindi.");
+        }, msUntilStart);
+      }
+
+      const msUntilFinish = finishDate.getTime() - now;
+      if (msUntilFinish > 1000) {
+        finishNotificationTimer = setTimeout(() => {
+          fireNotification("ReadyAt: Şarj Tamamlandı! 🏁", "Batarya hedef seviyeye ulaştı.");
+        }, msUntilFinish);
+      }
+    }
+
+    function fireNotification(title, body) {
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(title, {
+          body: body,
+          icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2338bdf8'><circle cx='12' cy='12' r='9.5' stroke='%2338bdf8' stroke-width='2'/><path d='M12.8 6.8L8.8 12.4H12.2L11.2 17.2L15.2 11.6H11.8L12.8 6.8Z' fill='%2338bdf8'/></svg>"
+        });
+      } else {
+        alert(`${title}\n${body}`);
+      }
+    }
+
+    function getDynamicEfficiency(rawKw) {
+      let baseEff = 0.92;
+      if (rawKw <= 2.5) baseEff = 0.83;
+      else if (rawKw <= 3.7) baseEff = 0.87;
+      else if (rawKw <= 7.4) baseEff = 0.90;
+      else baseEff = 0.93;
+
+      if (state.winterMode) baseEff -= 0.06;
+      return baseEff;
+    }
+
+    function parseTimeAsDate(timeStr, baseDate = new Date()) {
+      const [h, m] = timeStr.split(':').map(Number);
+      const d = new Date(baseDate);
+      d.setHours(h, m, 0, 0);
+      return d;
+    }
+
+    function formatHHMM(date) {
+      return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+    }
+
+    // --- BMS CV & CELL BALANCING DESTEKLİ PARÇALI HESAPLAMA MOTORU ---
+    // Dilimler:
+    // 0 - 90%: CC (Sabit Akım) - Tavan: OBC (11 kW)
+    // 90 - 95%: CV 1 - Ortalama güç ~7.5 kW (~35-45 dk)
+    // 95 - 98%: CV 2 - Ortalama güç ~4.5 kW (~35-40 dk)
+    // 98 - 100%: Dengeleme - Ortalama güç ~1.5 kW (~35-45 dk)
+    function calculateChargingMinutes(startSoc, endSoc, gridKw) {
+      if (startSoc >= endSoc) return { totalMinutes: 0, avgKw: gridKw, avgEff: 0.92 };
+
+      const segments = [
+        { from: 0, to: 90, bmsMaxKw: 99.0, floorMins: 0 },
+        { from: 90, to: 95, bmsMaxKw: 7.5, floorMins: 38 },
+        { from: 95, to: 98, bmsMaxKw: 4.5, floorMins: 35 },
+        { from: 98, to: 100, bmsMaxKw: 1.5, floorMins: 40 }
+      ];
+
+      let totalMinutes = 0;
+      let totalEnergyDelivered = 0;
+      let weightedEffSum = 0;
+
+      for (const seg of segments) {
+        const sFrom = Math.max(startSoc, seg.from);
+        const sTo = Math.min(endSoc, seg.to);
+
+        if (sTo > sFrom) {
+          const deltaPct = sTo - sFrom;
+          const segKwh = (deltaPct / 100) * state.batteryKwh;
+          
+          // Gerçek çekilen güç: Şebeke, OBC ve BMS CV tavanının en düşüğü
+          const effectiveRawKw = Math.min(gridKw, state.obcKw, seg.bmsMaxKw);
+          const eff = getDynamicEfficiency(effectiveRawKw);
+          const netKw = effectiveRawKw * eff;
+
+          let segMins = (segKwh / netKw) * 60;
+
+          // %90 üzeri aşamalarda BMS akım kısıtlamasının fiziksel süre tabanı
+          if (seg.floorMins > 0) {
+            const segRatio = deltaPct / (seg.to - seg.from);
+            const naturalFloor = seg.floorMins * segRatio;
+            if (segMins < naturalFloor) {
+              segMins = naturalFloor;
+            }
+          }
+
+          totalMinutes += segMins;
+          totalEnergyDelivered += segKwh;
+          weightedEffSum += eff * segKwh;
+        }
+      }
+
+      const avgEff = totalEnergyDelivered > 0 ? (weightedEffSum / totalEnergyDelivered) : 0.92;
+      const totalHours = totalMinutes / 60;
+      const avgKw = totalHours > 0 ? (totalEnergyDelivered / (totalHours * avgEff)) : gridKw;
+
+      return { totalMinutes, avgKw, avgEff };
+    }
+
+    function calculate() {
+      state.currentSoc = parseInt(document.getElementById('sliderCurrentSoc').value);
+      state.targetSoc = parseInt(document.getElementById('sliderTargetSoc').value);
+      if (state.currentSoc >= state.targetSoc) {
+        state.targetSoc = Math.min(100, state.currentSoc + 1);
+        document.getElementById('sliderTargetSoc').value = state.targetSoc;
+      }
+
+      document.getElementById('dispCurrentSoc').innerText = `%${state.currentSoc}`;
+      document.getElementById('dispTargetSoc').innerText = `%${state.targetSoc}`;
+      const deltaSoc = state.targetSoc - state.currentSoc;
+      document.getElementById('socDeltaTag').innerText = `+${deltaSoc}% Dolum`;
+
+      const neededKwh = (deltaSoc / 100) * state.batteryKwh;
+      document.getElementById('statEnergy').innerText = `${neededKwh.toFixed(1)} kWh`;
+
+      const now = new Date();
+      const heroCvBadge = document.getElementById('heroCvBadge');
+      const heroEarlyBadge = document.getElementById('heroEarlyBadge');
+      const heroEarlyTime = document.getElementById('heroEarlyTime');
+
+      // %90 üzeri CV / Dengeleme uyarısı
+      if (state.targetSoc > 90) {
+        heroCvBadge.style.display = 'inline-flex';
+      } else {
+        heroCvBadge.style.display = 'none';
+      }
+
+      if (state.tab === 'targetTime') {
+        document.getElementById('heroLabel').innerText = 'ÖNERİLEN TRİFAZE AKIM';
+
+        let startDate = parseTimeAsDate(state.startTime, now);
+        if (startDate.getTime() < now.getTime() - 5 * 60000) {
+          startDate.setDate(startDate.getDate() + 1);
+        }
+
+        let targetDate = parseTimeAsDate(state.targetTime, startDate);
+        if (targetDate.getTime() <= startDate.getTime()) {
+          targetDate.setDate(targetDate.getDate() + 1);
+        }
+
+        const totalMinutesWindow = Math.max(1, Math.round((targetDate.getTime() - startDate.getTime()) / 60000));
+        const wH = Math.floor(totalMinutesWindow / 60);
+        const wM = totalMinutesWindow % 60;
+        document.getElementById('chargingWindowTag').innerText = `${wH} sa ${wM} dk süre`;
+
+        function solveAmps(phase) {
+          let exactAmp = null;
+          for (let a = 6; a <= 32; a++) {
+            const rawKw = (phase * 230 * a) / 1000;
+            const res = calculateChargingMinutes(state.currentSoc, state.targetSoc, rawKw);
+            if (res.totalMinutes <= totalMinutesWindow) {
+              exactAmp = { amp: a, kw: res.avgKw, eff: res.avgEff, minsNeeded: res.totalMinutes, early: false };
+              break;
+            }
+          }
+
+          if (exactAmp) {
+            // Eğer 6A seçildiyse ve süre penceresinden belirgin erken bitiyorsa
+            if (exactAmp.amp === 6) {
+              const res6 = calculateChargingMinutes(state.currentSoc, state.targetSoc, (phase * 230 * 6) / 1000);
+              if (res6.totalMinutes < (totalMinutesWindow - 10)) {
+                const actualFinishDate = new Date(startDate.getTime() + res6.totalMinutes * 60000);
+                return {
+                  possible: true,
+                  amp: 6,
+                  kw: res6.avgKw,
+                  eff: res6.avgEff,
+                  early: true,
+                  finishDate: actualFinishDate,
+                  finishTimeStr: formatHHMM(actualFinishDate)
+                };
+              }
+            }
+            return { possible: true, ...exactAmp, finishDate: targetDate, finishTimeStr: formatHHMM(targetDate) };
+          }
+
+          return { possible: false };
+        }
+
+        const tri = solveAmps(3);
+        const mono = solveAmps(1);
+
+        if (tri.possible) {
+          document.getElementById('heroMainValue').innerText = `${tri.amp}A`;
+          document.getElementById('recTriAmp').innerText = `${tri.amp}A`;
+          document.getElementById('recTriDetail').innerText = `${tri.kw.toFixed(1)} kW (Trifaze)`;
+          document.getElementById('statPower').innerText = `${tri.kw.toFixed(1)} kW`;
+          document.getElementById('statEff').innerText = `%${Math.round(tri.eff * 100)}`;
+          document.getElementById('recTriCard').classList.add('active-rec');
+
+          if (tri.early) {
+            heroEarlyBadge.style.display = 'inline-flex';
+            heroEarlyTime.innerText = tri.finishTimeStr;
+            document.getElementById('heroSubDesc').innerText = `6A minimum sınır olduğu için şarj hedeflenen ${formatHHMM(targetDate)} yerine daha erken tamamlanır.`;
+            document.getElementById('recTriEarly').style.display = 'block';
+            document.getElementById('recTriEarly').innerText = `⚡ Bitiş: ${tri.finishTimeStr}`;
+          } else {
+            heroEarlyBadge.style.display = 'none';
+            document.getElementById('heroSubDesc').innerText = state.targetSoc > 90 
+              ? `Trifaze ${tri.amp}A ile CV ve hücre dengeleme dahil ${formatHHMM(targetDate)}'da hazır.`
+              : `Trifaze ${tri.amp}A ile tam ${formatHHMM(targetDate)}'da hazır olur.`;
+            document.getElementById('recTriEarly').style.display = 'none';
+          }
+
+          scheduleNotifications(startDate, tri.finishDate);
+        } else {
+          heroEarlyBadge.style.display = 'none';
+          document.getElementById('heroMainValue').innerText = 'Yetmez';
+          document.getElementById('heroSubDesc').innerText = state.targetSoc > 90
+            ? `${wH} sa ${wM} dk süre, %90 sonrası CV ve dengeleme yavaşlaması nedeniyle yetersiz.`
+            : `${wH} sa ${wM} dk sürede dolum için 11 kW üstü güç gerekir.`;
+          document.getElementById('recTriAmp').innerText = 'Aşar';
+          document.getElementById('recTriDetail').innerText = '11 kW tavanı aşıldı';
+          document.getElementById('recTriEarly').style.display = 'none';
+          document.getElementById('statPower').innerText = '11.0 kW';
+          document.getElementById('statEff').innerText = '%--';
+        }
+
+        if (mono.possible) {
+          document.getElementById('recMonoAmp').innerText = `${mono.amp}A`;
+          document.getElementById('recMonoDetail').innerText = `${mono.kw.toFixed(1)} kW (Monofaze)`;
+          if (mono.early) {
+            document.getElementById('recMonoEarly').style.display = 'block';
+            document.getElementById('recMonoEarly').innerText = `⚡ Bitiş: ${mono.finishTimeStr}`;
+          } else {
+            document.getElementById('recMonoEarly').style.display = 'none';
+          }
+        } else {
+          document.getElementById('recMonoAmp').innerText = 'Yetmez';
+          document.getElementById('recMonoDetail').innerText = 'Monofaze yetersiz';
+          document.getElementById('recMonoEarly').style.display = 'none';
+        }
+
+      } else {
+        document.getElementById('heroLabel').innerText = 'EN ERKEN BİTİŞ SAATİ';
+        heroEarlyBadge.style.display = 'none';
+
+        let phase = 3, amps = 16;
+        if (state.maxPreset === 'mono32') { phase = 1; amps = 32; }
+        else if (state.maxPreset === 'mono16') { phase = 1; amps = 16; }
+
+        const rawKw = (phase * 230 * amps) / 1000;
+        const res = calculateChargingMinutes(state.currentSoc, state.targetSoc, rawKw);
+
+        const totalMinutes = Math.round(res.totalMinutes);
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+
+        let startDate = parseTimeAsDate(state.startTime, now);
+        if (startDate.getTime() < now.getTime() - 5 * 60000) {
+          startDate.setDate(startDate.getDate() + 1);
+        }
+
+        const finishDate = new Date(startDate.getTime() + totalMinutes * 60000);
+        const fH = String(finishDate.getHours()).padStart(2, '0');
+        const fM = String(finishDate.getMinutes()).padStart(2, '0');
+
+        document.getElementById('heroMainValue').innerText = `${fH}:${fM}`;
+        const isDiffDay = finishDate.getDate() !== startDate.getDate();
+        document.getElementById('heroSubDesc').innerText = `${isDiffDay ? 'Ertesi gün ' : ''}${fH}:${fM}'de hazır (${h} sa ${m} dk sürer)`;
+        
+        document.getElementById('statPower').innerText = `${res.avgKw.toFixed(1)} kW`;
+        document.getElementById('statEff').innerText = `%${Math.round(res.avgEff * 100)}`;
+
+        scheduleNotifications(startDate, finishDate);
+      }
+      saveState();
+    }
+
+    document.getElementById('sliderCurrentSoc').addEventListener('input', calculate);
+    document.getElementById('sliderTargetSoc').addEventListener('input', calculate);
+
+    document.getElementById('inputStartTime').addEventListener('input', (e) => {
+      state.startTime = e.target.value;
+      calculate();
+    });
+
+    document.getElementById('btnSetNow').addEventListener('click', () => {
+      const nowStr = getNowTimeString();
+      state.startTime = nowStr;
+      document.getElementById('inputStartTime').value = nowStr;
+      calculate();
+    });
+
+    document.getElementById('inputTargetTime').addEventListener('input', (e) => {
+      state.targetTime = e.target.value;
+      calculate();
+    });
+
+    const tabTargetTime = document.getElementById('tabTargetTime');
+    const tabMaxSpeed = document.getElementById('tabMaxSpeed');
+    const panelTargetTime = document.getElementById('panelTargetTime');
+    const panelMaxSpeed = document.getElementById('panelMaxSpeed');
+
+    tabTargetTime.addEventListener('click', () => {
+      state.tab = 'targetTime';
+      tabTargetTime.classList.add('active');
+      tabMaxSpeed.classList.remove('active');
+      panelTargetTime.style.display = 'flex';
+      panelMaxSpeed.style.display = 'none';
+      calculate();
+    });
+
+    tabMaxSpeed.addEventListener('click', () => {
+      state.tab = 'maxSpeed';
+      tabMaxSpeed.classList.add('active');
+      tabTargetTime.classList.remove('active');
+      panelMaxSpeed.style.display = 'flex';
+      panelTargetTime.style.display = 'none';
+      calculate();
+    });
+
+    document.querySelectorAll('.preset-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        state.maxPreset = chip.getAttribute('data-preset');
+        calculate();
+      });
+    });
+
+    const toggleWinter = document.getElementById('toggleWinter');
+    toggleWinter.addEventListener('click', () => {
+      state.winterMode = !state.winterMode;
+      toggleWinter.classList.toggle('active', state.winterMode);
+      document.getElementById('winterDesc').innerText = state.winterMode ? 'Verim -%6 (Isıtıcı Aktif)' : '< 5°C Direnç / Isıtıcı';
+      calculate();
+    });
+
+    const toggleNotify = document.getElementById('toggleNotify');
+    toggleNotify.addEventListener('click', async () => {
+      if (!state.notifyActive) {
+        if ("Notification" in window) {
+          const perm = await Notification.requestPermission();
+          if (perm === "granted" || perm === "default") {
+            state.notifyActive = true;
+            toggleNotify.classList.add('active');
+            document.getElementById('notifyDesc').innerText = 'Alarmlar devrede';
+          } else {
+            alert("Bildirim izni verilmedi. Ekran açıkken uyarılırsınız.");
+            state.notifyActive = true;
+            toggleNotify.classList.add('active');
+          }
+        } else {
+          state.notifyActive = true;
+          toggleNotify.classList.add('active');
+          document.getElementById('notifyDesc').innerText = 'Alarmlar devrede';
+        }
+      } else {
+        state.notifyActive = false;
+        toggleNotify.classList.remove('active');
+        document.getElementById('notifyDesc').innerText = 'Kapalı';
+        resetNotificationTimers();
+      }
+      calculate();
+    });
+
+    const modalSettings = document.getElementById('modalSettings');
+    document.getElementById('btnSettings').addEventListener('click', () => modalSettings.classList.add('open'));
+    document.getElementById('btnCloseSettings').addEventListener('click', () => modalSettings.classList.remove('open'));
+    document.getElementById('btnSaveSettings').addEventListener('click', () => {
+      state.batteryKwh = parseFloat(document.getElementById('inputBattery').value) || 88.5;
+      state.obcKw = parseFloat(document.getElementById('inputOBC').value) || 11.0;
+      modalSettings.classList.remove('open');
+      calculate();
+    });
+
+    loadState();
+    calculate();
+  </script>
+</body>
+</html>
